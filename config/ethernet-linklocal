@@ -1,0 +1,23 @@
+# File: /etc/netctl/ethernet-linklocal
+# A netctl profile to connect to the rpi over ethernet
+# This file should be installed on the host machine in order to connect to the
+# rpi over the ethernet cable.
+
+# Either the static configuration provided in rpi/interfaces should be used on
+# the rpi, or the default configuration can be used and a dhcp server run on
+# the host machine.
+
+Description='A basic static ethernet connection'
+Interface=enp8s0
+Connection=ethernet
+IP=static
+Address=('192.168.2.1/24')
+
+ExcludeAuto=no
+Priority=2
+
+# The equivalent iproute commands:
+#     ip link set dev <iface> down
+#     ip addr flush dev <iface>
+#     ip addr add dev <iface> 192.168.2.1/24
+#     ip link set dev <iface> up
