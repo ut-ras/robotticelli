@@ -33,6 +33,7 @@ while true ; do
     esac
 done
 
+VERBOSE=${VERBOSE:-0}
 iptable_action=${iptable_action:--A}
 from_iface=${from_iface:-wlp9s0}
 to_iface=${to_iface:-enp8s0}
