@@ -12,7 +12,7 @@ setup(
             ],
         entry_points={
             'console_scripts': [
-                'primavera': 'primavera.primavera:main'
+                "primavera = primavera.primavera:main"
                 ],
             },
         )
