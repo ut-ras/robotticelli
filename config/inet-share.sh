@@ -38,6 +38,12 @@ iptable_action=${iptable_action:--A}
 from_iface=${from_iface:-wlp9s0}
 to_iface=${to_iface:-enp8s0}
 
+if [[ "$iptable_action" = "-A" ]]; then
+    sysctl net.ipv4.ip_forward=1
+else
+    sysctl net.ipv4.ip_forward=0
+fi
+
 (( VERBOSE )) && _echo () { echo $@ >&2 ; } || _echo () { :; }
 (( VERBOSE )) && _errorstream () { cat - >&2 ; } || _errorstream () { :; }
 
