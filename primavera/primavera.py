@@ -1,33 +1,42 @@
 
 import argparse
 import cv2
+import numpy as np
+from sklearn.cluster import MiniBatchKMeans
 
 
-def detect_colors(img, size):
-    ret, _, center = cv2.kmeans(
-        img.reshape((img.shape[0] * img.shape[1], 3)).astype('float32'),
-        size, (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0),
-        10, cv2.KMEANS_RANDOM_CENTERS)
+def detect_colors(image, size, as_lab=False):
+    h, w = image.shape[:2]
+    if as_lab:
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
+    image = image.reshape((h * w, 3))
+    # TODO: remove transparency before running KMeans
 
-    # LOG.info("Compactness: {}".format(ret))
+    clt = MiniBatchKMeans(n_clusters=size)
+    # TODO: Fit without alpha, predict with alpha
+    labels = clt.fit_predict(image).reshape((h, w))
+    centers = np.array([clt.cluster_centers_.astype("uint8")])
+    if as_lab:
+        centers = cv2.cvtColor(centers, cv2.COLOR_LAB2BGR)
+    image = clt.cluster_centers_.astype("uint8")[labels]
 
-    return ((int(r), int(g), int(b)) for (b, g, r) in center)
+    image = image.reshape((h, w, 3))
+    if as_lab:
+        image = cv2.cvtColor(image, cv2.COLOR_LAB2BGR)
+
+    return [(int(r), int(g), int(b)) for (b, g, r) in centers[0]], labels, image
 
 
 def select_palette(colors):
-    db = [
-        (0, 255, 255), # Cyan
-        (255, 0, 255), # Magenta
-        (255, 255, 0), # Yellow
-        (0, 0, 0) # Black
-        ]
-    print([color for color in colors])
+    return colors
 
 
 def main():
     parser = argparse.ArgumentParser('primavera')
     parser.add_argument('--image')
     parser.add_argument('-p', '--palette-size', type=int)
+    parser.add_argument('-w', '--save-image', type=str)
+    parser.add_argument('-s', '--save-labels', type=str)
 
     args = parser.parse_args()
 
@@ -35,7 +44,16 @@ def main():
     if img is None:
         raise ValueError("Invalid image file/format")
 
-    select_palette(detect_colors(img, args.palette_size))
+    colors, labels, image = detect_colors(img, args.palette_size)
+    # Dither
+
+    print(colors)
+
+    if args.save_labels:
+        np.save(args.save_labels, labels)
+
+    if args.save_image:
+       cv2.imwrite(args.save_image, image)
 
 
 if __name__ == '__main__':
