@@ -1,4 +1,4 @@
-opyright (c) 2009 Andrew Rapp. All rights reserved.
+/*Copyright (c) 2009 Andrew Rapp. All rights reserved.
  *
  * This file is part of XBee-Arduino.
  *
