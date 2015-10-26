@@ -31,6 +31,7 @@ def _solve_at_point(B, Term, P, R):
                 abs(R[2] - 0) < .00001):
             raise StopIteration("Found target point")
 
+        return [np.linalg.det(A)]
         return np.linalg.solve(A, -B)
     except Exception as e:
         print("%s\nR = %s\n\n"
@@ -42,9 +43,11 @@ def _solve_at_point(B, Term, P, R):
               "A =\n%s\n" %
               (e, R, B, Term, P, Fmag, F, A))
         if isinstance(e, StopIteration):
+            return [np.linalg.det(A)]
             pass
             # exit(0)
 
+        raise e
         return np.array([5e20, 5e20, 5e20,
                         5e20, 5e20, 5e20])
 
@@ -85,7 +88,8 @@ def solve_over_plane(plane=(33., 33.), robot=(.5, .5, .2), mass=10.):
 
     shape = (int((pw - 2*rw + _DX) / _DX),
              int((ph - 2*rh + _DY) / _DY),
-             6)
+             # 6)
+             1)
     result = np.fromiter((k
                           for i in range(shape[0])
                           for j in range(shape[1])
@@ -114,7 +118,8 @@ def main():
     ha = hf.add_subplot(111, projection='3d')
     X, Y = np.meshgrid(range(shape[0]), range(shape[1]))
 
-    for force, color in zip(range(4),
+    # for force, color in zip(range(4),
+    for force, color in zip(range(1),
                             ['blue', 'red', 'yellow',
                              'green', 'purple', 'orange']):
         ha.plot_surface(X[10:-10, 10:-10],
