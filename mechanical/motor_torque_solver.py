@@ -17,22 +17,26 @@ def _solve_at_point(B, Term, P, R):
 
     F = np.vstack((
         Fmag / np.linalg.norm(Fmag, axis=1)[:, np.newaxis],
-        np.array([[0, 0, 1], [0, 0, 1]])
+        # For the normal forces
+        np.array([[0, 0, 1], [0, 0, 1], [0, 0, 1]])
     ))
 
     A = np.vstack((
         F.T,
-        np.cross(P, F).T
+        np.cross(P, F).T,
+        [0, 0, 0, 0, 1, 1, 1],
     ))
+    Mz = np.array(A[5])
+    A[5] = [0, 0, 1, -1, 0, 0, 0]
 
     try:
+        res = [Mz @ np.linalg.solve(A, -B)]
         if (abs(R[0] - 1.55) < .00001 and
                 abs(R[1] - 3.8) < .00001 and
                 abs(R[2] - 0) < .00001):
             raise StopIteration("Found target point")
 
-        return [np.linalg.det(A)]
-        return np.linalg.solve(A, -B)
+        return res
     except Exception as e:
         print("%s\nR = %s\n\n"
               "B =\n%s\n\n"
@@ -43,8 +47,7 @@ def _solve_at_point(B, Term, P, R):
               "A =\n%s\n" %
               (e, R, B, Term, P, Fmag, F, A))
         if isinstance(e, StopIteration):
-            return [np.linalg.det(A)]
-            pass
+            return res
             # exit(0)
 
         raise e
@@ -67,6 +70,7 @@ def solve_over_plane(plane=(33., 33.), robot=(.5, .5, .2), mass=10.):
         np.array([rw,  -rh, rd]),
         np.array([-rw,  rh,  0]),
         np.array([rw,   rh,  0]),
+        np.array([0,   -rh,  0]),
     ))
 
     Term = np.vstack((
@@ -80,11 +84,12 @@ def solve_over_plane(plane=(33., 33.), robot=(.5, .5, .2), mass=10.):
         [0,  0],
         [-1, 0],
         [0,  1],
-        [rd/2,  -rh],
+        [rd/2,  0],
         [0,  0],
         [0,  0],
+        [0, -5.],
 
-    )), [Fg, N3])
+    )), [Fg, 1])
 
     shape = (int((pw - 2*rw + _DX) / _DX),
              int((ph - 2*rh + _DY) / _DY),
