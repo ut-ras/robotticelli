@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with XBee-Arduino.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+#include <stdio.h> 
 #include <Arduino.h>
 #include <XBee.h>
 
@@ -32,9 +32,9 @@ XBeeResponse response = XBeeResponse();
 ZBRxResponse rx = ZBRxResponse();
 ModemStatusResponse msr = ModemStatusResponse();
 
-int statusLed = 13;
-int errorLed = 13;
-int dataLed = 13;
+int statusLed = 10;
+int errorLed = 11;
+int dataLed = 12;
 
 void flashLed(int pin, int times, int wait) {
     
@@ -56,30 +56,37 @@ void setup() {
   
   // start serial
   Serial.begin(9600);
+  Serial1.begin(9600);
   xbee.begin(Serial);
+  pinMode(19, INPUT);
+  digitalWrite(19, HIGH);
   
   flashLed(statusLed, 3, 50);
 }
 
 // continuously reads packets, looking for ZB Receive or Modem Status
 void loop() {
-    
+    Serial1.print(F("working\n"));
     xbee.readPacket();
     
     if (xbee.getResponse().isAvailable()) {
       // got something
+      Serial1.print(F("got something\n"));
       
       if (xbee.getResponse().getApiId() == ZB_RX_RESPONSE) {
         // got a zb rx packet
+	Serial1.print(F("got zb rx packet\n"));
         
         // now fill our zb rx class
         xbee.getResponse().getZBRxResponse(rx);
             
         if (rx.getOption() == ZB_PACKET_ACKNOWLEDGED) {
             // the sender got an ACK
+		Serial1.print(F("acknowledged\n"));
             flashLed(statusLed, 10, 10);
         } else {
             // we got it (obviously) but sender didn't get an ACK
+	    Serial1.print(F("not acknowledged\n"));
             flashLed(errorLed, 2, 20);
         }
         // set dataLed PWM to value of the first byte in the data
@@ -87,23 +94,31 @@ void loop() {
       } else if (xbee.getResponse().getApiId() == MODEM_STATUS_RESPONSE) {
         xbee.getResponse().getModemStatusResponse(msr);
         // the local XBee sends this response on certain events, like association/dissociation
+	Serial1.print(F("got modem status"));
         
         if (msr.getStatus() == ASSOCIATED) {
           // yay this is great.  flash led
+	  Serial1.print(F("Is associated\n"));
           flashLed(statusLed, 10, 10);
         } else if (msr.getStatus() == DISASSOCIATED) {
           // this is awful.. flash led to show our discontent
-          flashLed(errorLed, 10, 10);
+          flashLed(errorLed, 10, 30);
+	  Serial1.print(F("Not associated\n"));
         } else {
           // another status
           flashLed(statusLed, 5, 10);
+	  Serial1.print(F("werid status\n"));
         }
       } else {
         // not something we were expecting
+	Serial1.print(F("Unexpected data\n"));
         flashLed(errorLed, 1, 25);    
       }
     } else if (xbee.getResponse().isError()) {
-      //nss.print("Error reading packet.  Error code: ");  
-      //nss.println(xbee.getResponse().getErrorCode());
+      Serial1.print(F("Error reading packet.  Error code: \n"));  
+      Serial1.print(xbee.getResponse().getErrorCode());
     }
+      else{
+	Serial1.print(F("Nothing is working :("));
+	}
 }

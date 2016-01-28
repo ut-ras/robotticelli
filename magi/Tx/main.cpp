@@ -1,4 +1,8 @@
-/*Copyright (c) 2009 Andrew Rapp. All rights reserved.
+/*Copyright (c) 2009 Andrew Rapp. All rights reserv.y(wait);
+ 46     delay(wait);
+ 46     delay(wait);
+ 46     delay(wait);
+
  *
  * This file is part of XBee-Arduino.
  *
@@ -30,14 +34,14 @@ XBee xbee = XBee();
 uint8_t payload[] = { 0, 0 };
 
 // SH + SL Address of receiving XBee
-XBeeAddress64 addr64 = XBeeAddress64(0x0013a200, 0x403e0f30);
+XBeeAddress64 addr64 = XBeeAddress64(0x0013a200, 0x40D4F14F);
 ZBTxRequest zbTx = ZBTxRequest(addr64, payload, sizeof(payload));
 ZBTxStatusResponse txStatus = ZBTxStatusResponse();
 
 int pin5 = 0;
 
-int statusLed = 13;
-int errorLed = 13;
+int statusLed = 10;
+int errorLed = 11;
 
 void flashLed(int pin, int times, int wait) {
 
@@ -62,7 +66,7 @@ void setup() {
 
 void loop() {   
   // break down 10-bit reading into two bytes and place in payload
-  pin5 = analogRead(5);
+  pin5 = analogRead(7);
   payload[0] = pin5 >> 8 & 0xff;
   payload[1] = pin5 & 0xff;
 
