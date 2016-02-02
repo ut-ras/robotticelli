@@ -67,41 +67,54 @@ def detect_colors(image, palette_size, database):
             reduced_image)
 
 
-def main():
-    parser = argparse.ArgumentParser('primavera')
-    parser.add_argument('-i', '--image', required=True)
-    parser.add_argument('-p', '--palette-size', type=int, default=5)
-    parser.add_argument('-w', '--save-image', type=str)
-    parser.add_argument('-s', '--save-labels', type=str)
-    parser.add_argument('-c', '--colors', type=str, required=True)
-    parser.add_argument('-d', '--dither', type=str)
-    parser.add_argument('-m', '--down-sample', action='store_true')
+def process_image(img, db,
+                  palette_size=5,
+                  scale=1.0,
+                  dither='no_dither'):
 
-    args = parser.parse_args()
+    if dither:
+        dither = importlib.import_module(
+            'dither.%s' % (dither or 'no_dither')).dither
 
-    img = cv2.imread(args.image)
-    # img = scipy.ndimage.imread(args.image)
-    if img is None:
-        raise ValueError("Invalid image file/format")
-
-    db = json.load(open(args.colors))
     names = np.array(list(db.keys()))
     colors = np.array([list(reversed(val)) for val in db.values()])
     palette, labels, image = detect_colors(img, args.palette_size, colors)
 
-    if args.dither:
-        dither = importlib.import_module('dither.%s' % args.dither).dither
-        image = dither(img, image, colors[palette])
+    image = dither(img, image, colors[palette])
+    # image = downsample(image, args.scale)
 
-    if args.down_sample:
-        image = downsample(image)
-    print('\n'.join(names[palette]))
+    return image, labels, colors[palette]
+
+
+def main():
+    parser = argparse.ArgumentParser('primavera')
+    parser.add_argument('-w', '--save-image', type=str)
+    parser.add_argument('-l', '--save-labels', type=str)
+    parser.add_argument('-p', '--palette-size', type=int, default=5)
+    parser.add_argument('-c', '--colors', type=str, required=True)
+    parser.add_argument('-d', '--dither', type=str, default='no_dither')
+    parser.add_argument('-s', '--scale', type=float, default=1.0)
+    parser.add_argument('--downsample-method', type=str)
+    parser.add_argument('IMAGE')
+
+    args = parser.parse_args()
+
+    img = cv2.imread(args.IMAGE)
+    if img is None:
+        raise ValueError("Invalid image file/format")
+
+    db = json.load(open(args.colors))
+    image, labels, colors = process_image(img, db,
+                                          palette_size=args.palette_size,
+                                          scale=args.scale,
+                                          dither=args.dither)
+
+    print('\n'.join(colors))
 
     if args.save_labels:
         np.save(args.save_labels, labels)
 
     if args.save_image:
-        # scipy.misc.imsave(args.save_image, image)
         cv2.imwrite(args.save_image, image)
 
 
