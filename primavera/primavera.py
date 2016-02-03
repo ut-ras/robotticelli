@@ -9,62 +9,52 @@ import scipy as sp
 from sklearn.cluster import MiniBatchKMeans
 
 
-def downsample(image):
+def convert_to_database_palette(image, color_database):
+    """ A collection of indexes to the colors in our database that best
+    represents its respective pixel sp.spatial.distance.cdist finds the
+    distance between the colors in our database and each pixel in our image
+    np.argmin finds the index of the smallest distance (aka the closest color)
+    """
+    database_indexes = np.argmin(sp.spatial.distance.cdist(
+        image, color_database), axis=1)
 
-    newX = image.shape[0]/2 - 1
-    newY = image.shape[1]/2 - 1
+    # Takes the indexes found in db_idx (color database indexes) and creates
+    # an image out of it
+    return color_database[database_indexes], database_indexes
 
-    downsampled = np.zeros((newX, newY, 3))
+def cluster_colors_into_groups(image, clusters):
+    # Performs k-means clustering on the colors in the image
+    clt = MiniBatchKMeans(n_clusters=clusters)
+    clt.fit_predict(image)
 
-    for x in range(0, newX):
-        for y in range(0, newY):
-            color1 = image[2*x + 0][2*y + 0]
-            color2 = image[2*x + 0][2*y + 1]
-            color3 = image[2*x + 1][2*y + 0]
-            color4 = image[2*x + 1][2*y + 1]
+    # Returns the centers of the found clusters
+    # These centers will give the color that the cluster is representing
+    # as coordinates in RGB space
+    return np.array([clt.cluster_centers_.astype("uint8")])
 
-            colors = [color1, color2, color3, color4]
+def detect_colors(image, palette_size, color_database):
+    """ find the best set of colors for an image given a color database and a pallete size
+    """
 
-            maxColor = [0, 0, 0]
-            for i in range(0, 3):
-                if np.linalg.norm(colors[i]-maxColor) > 0:
-                    maxColor = colors[i]
+    # Takes all the colors in the image and puts them side-by-side so that
+    # they can be iterated through more easily
+    h, w  = image.shape[:2]
+    image = image.reshape(h * w, 3)
 
-            downsampled[x][y] = maxColor
+    # Gives us a rouge palette for this image
+    centers = cluster_colors_into_groups(image, palette_size)
 
-    return downsampled[:, :, :]
+    # Approximates this palette in terms of spray paint colors
+    new_palette, palette_indexes = convert_to_database_palette(
+        centers[0], color_database)
 
+    # Puts the image in terms of the spray paint palette we just found
+    new_image, new_image_indexes = convert_to_database_palette(
+        image, new_palette)
 
-def detect_colors(image, palette_size, database):
-    h, w = image.shape[:2]
-
-    image = image.reshape((h * w, 3))
-    # Indexes to the database that best represents the image
-    db_idx = np.argmin(sp.spatial.distance.cdist(image, database), axis=1)
-
-    # Convert the image as best as possible to our database
-    image = database[db_idx]
-    # TODO: remove transparency before running KMeans
-
-    clt = MiniBatchKMeans(n_clusters=palette_size)
-    # TODO: Fit without alpha, predict with alpha
-    labels = clt.fit_predict(image)
-    centers = np.array([clt.cluster_centers_.astype("uint8")])
-
-    bins = np.zeros((len(centers[0]), len(database)))
-    for i, j in zip(labels, db_idx):
-        bins[i][j] += 1
-    centers_to_db = np.argmax(bins, axis=1)
-
-    # Convert the output image to our database
-    image_in_db_idx = centers_to_db[labels]
-    reduced_image = database[image_in_db_idx].reshape((h, w, 3))
-
-    palette = np.unique(centers_to_db)
-
-    return (palette,
-            image_in_db_idx.reshape((h, w)),
-            reduced_image)
+    return (palette_indexes,
+            new_image_indexes.reshape((h, w)),
+            new_image.reshape((h ,w , 3)))
 
 
 def main():
@@ -75,35 +65,34 @@ def main():
     parser.add_argument('-s', '--save-labels', type=str)
     parser.add_argument('-c', '--colors', type=str, required=True)
     parser.add_argument('-d', '--dither', type=str)
-    parser.add_argument('-m', '--down-sample', action='store_true')
+    parser.add_argument('-r', '--resize', type=float, default=1)
 
     args = parser.parse_args()
+    img  = cv2.imread(args.image)
 
-    img = cv2.imread(args.image)
-    # img = scipy.ndimage.imread(args.image)
     if img is None:
         raise ValueError("Invalid image file/format")
 
-    db = json.load(open(args.colors))
-    names = np.array(list(db.keys()))
-    colors = np.array([list(reversed(val)) for val in db.values()])
+    database = json.load(open(args.colors))
+    names    = np.array(list(database.keys()))
+    colors   = np.array([list(reversed(val)) for val in database.values()])
+
     palette, labels, image = detect_colors(img, args.palette_size, colors)
 
     if args.dither:
         dither = importlib.import_module('dither.%s' % args.dither).dither
-        image = dither(img, image, colors[palette])
+        image  = dither(img, image, colors[palette])
 
-    if args.down_sample:
-        image = downsample(image)
-    print('\n'.join(names[palette]))
+    if args.resize != 1:
+        image = sp.misc.imresize(image, args.resize)
 
     if args.save_labels:
         np.save(args.save_labels, labels)
 
     if args.save_image:
-        # scipy.misc.imsave(args.save_image, image)
         cv2.imwrite(args.save_image, image)
 
+    print('\n'.join(names[palette]))
 
 if __name__ == '__main__':
     main()
