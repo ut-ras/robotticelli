@@ -57,42 +57,53 @@ def detect_colors(image, palette_size, color_database):
             new_image.reshape((h ,w , 3)))
 
 
+def process_image(img, db,
+                  palette_size=5,
+                  scale=1.0,
+                  dither='no_dither'):
+
+    if dither:
+        dither = importlib.import_module(
+            'dither.%s' % (dither or 'no_dither')).dither
+
+    names, colors = [np.array(i) for i in zip(*db.iteritems())]
+    palette, labels, image = detect_colors(img, palette_size, colors)
+
+    image = dither(img, image, colors[palette])
+    image = sp.misc.imresize(image, scale)
+
+    return image, labels, names[palette]
+
+
 def main():
     parser = argparse.ArgumentParser('primavera')
-    parser.add_argument('-i', '--image', required=True)
-    parser.add_argument('-p', '--palette-size', type=int, default=5)
     parser.add_argument('-w', '--save-image', type=str)
-    parser.add_argument('-s', '--save-labels', type=str)
+    parser.add_argument('-l', '--save-labels', type=str)
+    parser.add_argument('-p', '--palette-size', type=int, default=5)
     parser.add_argument('-c', '--colors', type=str, required=True)
-    parser.add_argument('-d', '--dither', type=str)
-    parser.add_argument('-r', '--resize', type=float, default=1)
+    parser.add_argument('-d', '--dither', type=str, default='no_dither')
+    parser.add_argument('-s', '--scale', type=float, default=1.0)
+    parser.add_argument('IMAGE')
 
     args = parser.parse_args()
-    img  = cv2.imread(args.image)
 
+    img = cv2.imread(args.IMAGE)
     if img is None:
         raise ValueError("Invalid image file/format")
 
-    database = json.load(open(args.colors))
-    names    = np.array(list(database.keys()))
-    colors   = np.array([list(reversed(val)) for val in database.values()])
+    db = json.load(open(args.colors))
+    image, labels, colors = process_image(img, db,
+                                          palette_size=args.palette_size,
+                                          scale=args.scale,
+                                          dither=args.dither)
 
-    palette, labels, image = detect_colors(img, args.palette_size, colors)
-
-    if args.dither:
-        dither = importlib.import_module('dither.%s' % args.dither).dither
-        image  = dither(img, image, colors[palette])
-
-    if args.resize != 1:
-        image = sp.misc.imresize(image, args.resize)
+    print('\n'.join(colors))
 
     if args.save_labels:
         np.save(args.save_labels, labels)
 
     if args.save_image:
         cv2.imwrite(args.save_image, image)
-
-    print('\n'.join(names[palette]))
 
 if __name__ == '__main__':
     main()
