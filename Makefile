@@ -45,7 +45,7 @@ endif
 .PHONY: all clean lst size sender receiver
 
 all:  sender receiver size
-sender receiver : % : bin/$(PROJECT)-%.elf
+sender receiver : % : bin/$(PROJECT)-%.bin
 
 clean:
 	rm -fr bin
