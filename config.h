@@ -25,7 +25,7 @@
 #define RADIO_RX                NC /* TODO: specify your setup's Serial RX pin connected to the XBee module DOUT pin */
 //#define RADIO_RTS               NC /* TODO: specify your setup's Serial RTS# pin connected to the XBee module RTS# pin */
 //#define RADIO_CTS               NC /* TODO: specify your setup's Serial CTS# pin connected to the XBee module CTS# pin */
-//#define RADIO_RESET             NC /* TODO: specify your setup's GPIO (output) connected to the XBee module's reset pin */
+#define RADIO_RESET             NC /* TODO: specify your setup's GPIO (output) connected to the XBee module's reset pin */
 //#define RADIO_SLEEP_REQ         NC /* TODO: specify your setup's GPIO (output) connected to the XBee module's SLEEP_RQ pin */
 //#define RADIO_ON_SLEEP          NC /* TODO: specify your setup's GPIO (input) connected to the XBee module's ON_SLEEP pin */
 #define DEBUG_TX                NC /* TODO: specify your setup's Serial TX for debugging */
