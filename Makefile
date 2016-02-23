@@ -42,10 +42,12 @@ else
   CC_FLAGS += -DNDEBUG -Os
 endif
 
-.PHONY: all clean lst size sender receiver
+.PHONY: all clean lst size sender receiver flash-all
 
 all:  sender receiver size
 sender receiver : % : bin/$(PROJECT)-%.bin
+flash-all: all
+	$(Debug)./flash-boards.py bin/${PROJECT}-*.bin
 
 clean:
 	rm -fr bin
@@ -78,6 +80,9 @@ define target-template =
 bin/$(PROJECT)-$(1).elf: $(OBJECTS) $(SYS_OBJECTS) $(patsubst %.cpp,bin/%.o,$(wildcard $(1)/*.cpp))
 	$(Debug)echo LD $$@
 	$(Debug)$(LD) $(LD_FLAGS) -T$(LINKER_SCRIPT) $(LIBRARY_PATHS) -o $$@ $$^ $(LIBRARIES) $(LD_SYS_LIBS) $(LIBRARIES) $(LD_SYS_LIBS)
+.PHONY: flash-$(1)
+flash-$(1): bin/$(PROJECT)-$(1).bin
+	$(Debug)./flash-boards.py bin/$(PROJECT)-$(1).bin
 endef
 $(foreach way,sender receiver,$(eval $(call target-template,$(way))))
 
