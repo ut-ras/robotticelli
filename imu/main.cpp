@@ -1,114 +1,44 @@
-/**
- * Copyright (c) 2015 Digi International Inc.,
- * All rights not expressly granted are reserved.
- *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this file,
- * You can obtain one at http://mozilla.org/MPL/2.0/.
- *
- * Digi International Inc. 11001 Bren Road East, Minnetonka, MN 55343
- * =======================================================================
- */
+#include "mbed/mbed.h"
+#include "L3GD20.h"
+#include "config.h"
 
-#include "mbed.h"
-#include "XBeeLib.h"
-#if defined(ENABLE_LOGGING)
-#include "DigiLoggerMbedSerial.h"
-using namespace DigiLog;
-#endif
-
-#define REMOTE_NODE_ADDR64_MSB  ((uint32_t)0x0013A200)
-
-#define REMOTE_NODE_ADDR64_LSB  ((uint32_t)0x40d4f16f)
-
-#define REMOTE_NODE_ADDR64      UINT64(REMOTE_NODE_ADDR64_MSB, REMOTE_NODE_ADDR64_LSB)
-
-using namespace XBeeLib;
-
+L3GD20 gyro(I2C_SDA, I2C_SCL);
+static DigitalOut led(LED3);
+float g1;
+float g2;
+float g3;
+bool data = false;
 Serial *log_serial;
 
-static void send_data_to_coordinator(XBeeZB& xbee)
-{
-    const char data[] = "send_data_to_coordinator";
-    const uint16_t data_len = strlen(data);
+/*static void blinky(void) {
+    static DigitalOut led(LED1);
+    static DigitalOut led2(LED2);
+    static DigitalOut led3(LED3);
+    static int i = 1;
+    if (i%1==0) led = !led;
+    if (i%2==0) led2 = !led2;
+    if (i%4==0) led3 = !led3;
+    i++;
+//    printf("LED = %d%d%d \r\n",led.read(), led2.read(), led3.read());
+}*/
 
-    const TxStatus txStatus = xbee.send_data_to_coordinator((const uint8_t *)data, data_len);
-    if (txStatus == TxStatusSuccess)
-        log_serial->printf("send_data_to_coordinator OK\r\n");
-    else
-        log_serial->printf("send_data_to_coordinator failed with %d\r\n", (int) txStatus);
-}
-
-static void send_broadcast_data(XBeeZB& xbee)
-{
-    const char data[] = "send_broadcast_data";
-    const uint16_t data_len = strlen(data);
-
-    const TxStatus txStatus = xbee.send_data_broadcast((const uint8_t *)data, data_len);
-    if (txStatus == TxStatusSuccess)
-        log_serial->printf("send_broadcast_data OK\r\n");
-    else
-        log_serial->printf("send_broadcast_data failed with %d\r\n", (int) txStatus);
-}
-
-static void send_data_to_remote_node(XBeeZB& xbee, const RemoteXBeeZB& RemoteDevice)
-{
-    const char data[] = "send_data_to_remote_node";
-    const uint16_t data_len = strlen(data);
-
-    const TxStatus txStatus = xbee.send_data(RemoteDevice, (const uint8_t *)data, data_len);
-    if (txStatus == TxStatusSuccess)
-        log_serial->printf("send_data_to_remote_node OK\r\n");
-    else
-        log_serial->printf("send_data_to_remote_node failed with %d\r\n", (int) txStatus);
-}
-
-static void send_explicit_data_to_remote_node(XBeeZB& xbee, const RemoteXBeeZB& RemoteDevice)
-{
-    char data[] = "send_explicit_data_to_remote_node";
-    const uint16_t data_len = strlen(data);
-    const uint8_t dstEP = 0xE8;
-    const uint8_t srcEP = 0xE8;
-    const uint16_t clusterID = 0x0011;
-    const uint16_t profileID = 0xC105;
-
-    const TxStatus txStatus = xbee.send_data(RemoteDevice, dstEP, srcEP, clusterID, profileID, (const uint8_t *)data, data_len);
-    if (txStatus == TxStatusSuccess)
-        log_serial->printf("send_explicit_data_to_remote_node OK\r\n");
-    else
-        log_serial->printf("send_explicit_data_to_remote_node failed with %d\r\n", (int) txStatus);
-}
-
-int main()
-{
+int main(void) {
     log_serial = new Serial(DEBUG_TX, DEBUG_RX);
     log_serial->baud(9600);
-    log_serial->printf("Sample application to demo how to send unicast and broadcast data with the XBeeZB\r\n\r\n");
-    log_serial->printf(XB_LIB_BANNER);
-
-#if defined(ENABLE_LOGGING)
-    new DigiLoggerMbedSerial(log_serial, LogLevelInfo);
-#endif
-
-    XBeeZB xbee = XBeeZB(RADIO_TX, RADIO_RX, RADIO_RESET, NC, NC, 9600);
-
-    RadioStatus radioStatus = xbee.init();
-    MBED_ASSERT(radioStatus == Success);
-
-    /* Wait until the device has joined the network */
-    log_serial->printf("Waiting for device to join the network: ");
-    while (!xbee.is_joined()) {
-        wait_ms(1000);
-        log_serial->printf(".");
+  
+    //    minar::Scheduler::postCallback(blinky).period(minar::milliseconds(50));
+    //
+    //
+//    char cmd[2];
+    while(true){
+        led = !led;
+   /*
+     * figure out pyocd
+     * get this to flash
+     * figure out why read is not getting called
+     */
+        wait(0.5);
+        data = gyro.read(&g1, &g2, &g3);
+        if (data) log_serial->printf("x: %.2f  y: %.2f  z: %.2f\n\r", g1, g2, g3);
     }
-    log_serial->printf("OK\r\n");
-
-    const RemoteXBeeZB remoteDevice = RemoteXBeeZB(REMOTE_NODE_ADDR64);
-
-    send_data_to_coordinator(xbee);
-    send_broadcast_data(xbee);
-    send_data_to_remote_node(xbee, remoteDevice);
-    send_explicit_data_to_remote_node(xbee, remoteDevice);
-
-    delete(log_serial);
 }
