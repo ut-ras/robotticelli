@@ -2,12 +2,10 @@
  stuff.
  
 # Building
- 1. Get the XBeeLib
- 2. Put it in a directory named `XBeeLib`
- 3. Run `make` or `make all` or `make sender` or `make receiver`
- 4. Install the UDEV rule, `52-user-frdm.rules` into udev (`sudo cp 52-user-frdm.rules /etc/udev/rules.d/`)
- 4. ???
- 5. Profit
+ 1. Run `make` or `make all` or `make sender` or `make receiver`
+ 2. Install the UDEV rule, `52-user-frdm.rules` into udev (`sudo cp 52-user-frdm.rules /etc/udev/rules.d/`)
+ 3. ???
+ 4. Profit
 
 # Flashing
   1. Go back and build a firmware
