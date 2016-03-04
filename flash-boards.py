@@ -8,7 +8,10 @@ import io
 import os
 
 def createWriteableFile (name) :
-    return open(name, 'r+')
+    try :
+        return open(name, 'r')
+    except IOError :
+        return open(name, 'w')
 
 if __name__ == '__main__' :
     parser = argparse.ArgumentParser(description = "flash a board with sender or reciever code")
@@ -35,7 +38,10 @@ if __name__ == '__main__' :
     try:
         config = json.load(args.config)
     except ValueError:
-        print("WARNING: configuration file corrupted")
+        print("WARNING: configuration file corrupted; creating a new empty one")
+        config = {}
+    except IOError:
+        print("INFO: board configuration file not found; creating a new empty one")
         config = {}
 
     for board in MbedBoard.getAllConnectedBoards() :
@@ -57,6 +63,5 @@ if __name__ == '__main__' :
             target.halt()
             board.uninit()
 
-    args.config.seek(0)
-    json.dump(config,args.config,indent=4)
-    args.config.close()
+    with open(args.config.name, 'w') as fd :
+        json.dump(config,fd,indent=4)
