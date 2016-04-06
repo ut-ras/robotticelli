@@ -13,19 +13,20 @@
 # Outputs:
 #       - set(([(x, y, can number)], [(color, can number)]))
 
-from rtree import index
+from neighbor import Index
 import random
 import argparse
 import numpy as np
 import math
 
 def solve_rounds(pixels, number_of_cans, max_pixels_per_can, max_per_cluster=100):
-    idx = index.Index()
+    idx = Index()
 
     # Insert all pixels into the rtree
     for y in range(pixels.shape[0]):
         for x in range(pixels.shape[1]):
-            idx.insert(pixels[y][x], (x, y, x, y), obj=set([(x, y, pixels[y][x])]))
+            if pixels[y][x] == 9: continue
+            idx.insert((x, y, pixels[y][x]), set([(x, y, pixels[y][x])]))
     w, h = pixels.shape
 
     # left bottom right top
@@ -37,36 +38,42 @@ def solve_rounds(pixels, number_of_cans, max_pixels_per_can, max_per_cluster=100
     while performed_merge:
         performed_merge = False
 
-        objs = list(idx.intersection(bbox, objects=True))
-
         # cluster into next level
-        next_tree = index.Index()
+        next_tree = Index()
         num_pixels = np.bincount(pixels.reshape(h*w))
         for color in range(number_of_cans):
             # random dist
-            color_map = filter(lambda x: x.id == color, objs)
             pop = int(math.ceil(1.0*num_pixels[color]/max_per_cluster))
-            rdist = random.sample(color_map, pop)
-            for center in rdist:
-                new_cluster = center.object
-                idx.delete(center.id, center.bbox)
-                for cluster in idx.nearest(center.bbox, max_per_cluster, objects=True):
-                    obj = cluster.object
-                    if len(obj | new_cluster) < max_per_cluster:
+            print("Pop\t%s" % pop)
+            for _ in range(pop):
+                objs = idx.points
+                color_map = idx.getpoints(color)
+                print("Points\t%s" % color_map)
+                if not color_map: continue
+                center = random.sample(color_map, 1)[0]
+                print("Center\t%s" % (center,))
+                new_cluster = center[1]
+                idx.delete(center[0])
+                for cluster in idx.nearest(center[0], max_per_cluster):
+                    obj = cluster[1]
+                    print("    Considering %s" % (cluster,))
+                    if len(obj | new_cluster) <= max_per_cluster:
                         performed_merge = bool(obj - new_cluster)
-                        new_cluster.union(obj)
-                        idx.delete(cluster.id, cluster.bbox)
+                        new_cluster = new_cluster.union(obj)
+                        print("    New cluster:\t%s" % new_cluster)
+                        idx.delete(cluster[0])
+                        print("    Deleted\t%s" % cluster[1])
 
                 # find new center of cluster
                 if new_cluster:
-                    print(new_cluster)
+                    print("New\t%s" % new_cluster)
                     x, y, _ = map(lambda x: sum(x)/len(x), zip(*new_cluster))
-                    next_tree.insert(color, (x, y, x, y), obj=new_cluster)
+                    next_tree.insert((x, y, color), new_cluster)
 
         idx = next_tree
         level += 1
-    print(list(x.object for x in idx.intersection(bbox, objects=True)))
-    return list(x.object for x in idx.intersection(bbox, objects=True))
+    print([i[1] for i in idx.points])
+    return idx.points
 
 def main():
     parser = argparse.ArgumentParser('venus')
