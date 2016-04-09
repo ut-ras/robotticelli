@@ -22,16 +22,13 @@ def dither(image, reduced_image, palette):
     for x in range(0, image.shape[0]):
         for y in range(0, image.shape[1]):
 
-            thresholdValue = thresholdMap[x % 8][y % 8]
+            thresholdValue = thresholdMap[x % 8][y % 8]/(palette.shape[0]/2)
 
-            old = np.array(dithered[x][y])
-            if (old[0] != 255 and old[1] != 255 and old[2] != 255):
-                old[0] *= (.5 + .5 * thresholdValue)
-                old[1] *= (.5 + .5 * thresholdValue)
-                old[2] *= (.5 + .5 * thresholdValue)
+            old     = np.array(dithered[x][y])
 
-            best = [0, 0, 0]
-            cost = float('inf')
+            old[0] = 255 if old[0] * (1 + thresholdValue) > 255 else old[0] * (1 + thresholdValue)
+            old[1] = 255 if old[1] * (1 + thresholdValue) > 255 else old[1] * (1 + thresholdValue)
+            old[2] = 255 if old[2] * (1 + thresholdValue) > 255 else old[2] * (1 + thresholdValue)
 
             dithered[x][y] = palette[np.argmin(
                 scipy.spatial.distance.cdist(
