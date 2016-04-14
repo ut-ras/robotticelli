@@ -19,61 +19,55 @@ import argparse
 import numpy as np
 import math
 
-def solve_rounds(pixels, number_of_cans, max_pixels_per_can, max_per_cluster=100):
+def find_clusters(pixels, number_of_labels, max_per_cluster=100):
     idx = Index()
 
     # Insert all pixels into the rtree
     for y in range(pixels.shape[0]):
         for x in range(pixels.shape[1]):
-            if pixels[y][x] == 9: continue
             idx.insert((x, y, pixels[y][x]), set([(x, y, pixels[y][x])]))
     w, h = pixels.shape
 
     # left bottom right top
     bbox = (0, 0, h, w)
 
-    performed_merge = True
-    level = 0
-    num_clusters = h*w  # TODO: don't count empty pixels
+    level, performed_merge = 0, True
     while performed_merge:
         performed_merge = False
 
         # cluster into next level
         next_tree = Index()
         num_pixels = np.bincount(pixels.reshape(h*w))
-        for color in range(number_of_cans):
+        for color in range(number_of_labels):
             # random dist
             pop = int(math.ceil(1.0*num_pixels[color]/max_per_cluster))
-            print("Pop\t%s" % pop)
             for _ in range(pop):
                 objs = idx.points
                 color_map = idx.getpoints(color)
-                print("Points\t%s" % color_map)
                 if not color_map: continue
                 center = random.sample(color_map, 1)[0]
-                print("Center\t%s" % (center,))
                 new_cluster = center[1]
                 idx.delete(center[0])
                 for cluster in idx.nearest(center[0], max_per_cluster):
                     obj = cluster[1]
-                    print("    Considering %s" % (cluster,))
                     if len(obj | new_cluster) <= max_per_cluster:
                         performed_merge = bool(obj - new_cluster)
                         new_cluster = new_cluster.union(obj)
-                        print("    New cluster:\t%s" % new_cluster)
                         idx.delete(cluster[0])
-                        print("    Deleted\t%s" % cluster[1])
 
                 # find new center of cluster
                 if new_cluster:
-                    print("New\t%s" % new_cluster)
                     x, y, _ = map(lambda x: sum(x)/len(x), zip(*new_cluster))
                     next_tree.insert((x, y, color), new_cluster)
 
+        assert(len(idx) == 0)
         idx = next_tree
         level += 1
     print([i[1] for i in idx.points])
     return idx.points
+
+def solve_rounds(pixels, number_of_cans, max_pixels_per_can=100):
+    clusters = find_clusters(pixels, number_of_cans, max_per_cluster=max_pixels_per_can)
 
 def main():
     parser = argparse.ArgumentParser('venus')

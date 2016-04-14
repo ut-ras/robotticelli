@@ -2,6 +2,9 @@ class Index(object):
     def __init__(self,  *args, **kwargs):
         self.points = []
 
+    def __len__(self,  *args, **kwargs):
+        return len(self.points)
+
     def insert(self, xytag, obj):
         self.points.append((xytag, obj))
 
