@@ -1,6 +1,7 @@
 class Index(object):
     def __init__(self,  *args, **kwargs):
         self.points = []
+        self.deleted = set()
 
     def __len__(self,  *args, **kwargs):
         return len(self.points)
@@ -16,15 +17,17 @@ class Index(object):
 
         filtered = filter(lambda x: x[0][2] == xytag[2], self.points)
         filtered.sort(key=distance)
-        return filtered[:num_results]
+        for i in filtered:
+            if i[0] not in self.deleted:
+                yield i
 
     def delete(self, xytag):
-        idxs = [i for i, p in enumerate(self.points) if p[0] == xytag]
-        for i in reversed(idxs):
-            self.points.pop(i)
+        self.deleted.add(xytag)
 
     def getpoints(self, tag):
-        return filter(lambda x: x[0][2] == tag, self.points)
+        for i in filter(lambda x: x[0][2] == tag, self.points):
+            if i[0] not in self.deleted:
+                yield i
 
     def valid(self):
         return True
