@@ -152,12 +152,13 @@ def median_cut(image, palette_size, color_database, deposit_c, overshoot, iternu
             deposit_c.append(small_best[0][0][0])
 
     # Recurse if the function hasn't iterated enough times
+
     if iternum < iterations:
         iternum += 1
         if smr_vals.size > 0:
-            median_cut(image[smr_vals], palette_size, color_database, deposit_c, iternum)
+            median_cut(image[smr_vals], palette_size, color_database, deposit_c, overshoot, iternum)
         if bgr_vals.size > 0:
-            median_cut(image[bgr_vals], palette_size, color_database, deposit_c, iternum)
+            median_cut(image[bgr_vals], palette_size, color_database, deposit_c, overshoot, iternum)
 
 
 
@@ -186,7 +187,7 @@ def detect_colors(image, palette_size, color_database, quick = False, entire = F
 
     reduced_colors = color_database
 
-    if not doNotMerge or not entire:
+    if not doNotMerge and not entire:
         reduced_colors = merge(uniqueColors, palette_size, image = (False if quick else image))
 
     # finds best palette
@@ -200,6 +201,9 @@ def detect_colors(image, palette_size, color_database, quick = False, entire = F
             new_image.reshape((h ,w , 3)))
 
 def checkInconsistent(image):
+    '''Debugging tool to check that the colors picked for the image
+    match the colors in the output'''
+
     print("scanning image for final colors")
     print("check for inconsistencies...")
 
@@ -238,11 +242,13 @@ def main():
 
     palette, labels, image = detect_colors(img, args.palette_size, colors, args.quick, args.entire, args.overshoot, args.merge)
 
+    print('\n'.join(names[palette]))
+
     if args.dither:
         dither = importlib.import_module('dither.%s' % args.dither).dither
         image  = dither(img, image, colors[palette])
 
-    checkInconsistent(image)
+    #checkInconsistent(image)
 
     if args.save_labels:
         np.save(args.save_labels, labels)
@@ -250,7 +256,6 @@ def main():
     if args.save_image:
         cv2.imwrite(args.save_image, image)
 
-    print('\n'.join(names[palette]))
 
 if __name__ == '__main__':
     main()
