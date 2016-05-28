@@ -3,13 +3,13 @@ from numpy import hypot as hyp
 import matplotlib.pyplot as plt
 
 
-H  = 10   #Wall Height
-W  = 20   #Wall Width
+H  = 10   #Wall Height in m
+W  = 20   #Wall Width in m
 g  = 9.81 #Acceleration of gravity in m/s^2
-m  = 1   #Assuming the robot weights 10 kg
+m  = 10   #The robot mass in kg
 
-h  = .5   #Robot height
-w  = .5   #Robot width 
+h  = .5   #Robot height in m
+w  = .5   #Robot width in m
 
 b  = W * .0001    #Buffer in meters between the edge of the wall and the edge of the mural   
 
@@ -17,18 +17,18 @@ def calc_angle(x, y):
 	xp = W - x
 	yp = H - y
 
-	tan1 =  yp/xp
-	tan2 = -yp/x
+	tan1 = -yp/x
+	tan2 =  yp/xp
 	tan3 =  y/x
 	tan4 = -y/xp
 
-	sin1 = yp/hyp(xp, yp)
-	sin2 = yp/hyp(x , yp)
+	sin1 = yp/hyp(x , yp)
+	sin2 = yp/hyp(xp, yp)
 	sin3 = -y/hyp(x , y )
 	sin4 = -y/hyp(xp, y )
 
-	cos1 = xp/hyp(xp, yp)
-	cos2 = -x/hyp(x , yp)
+	cos1 = -x/hyp(x , yp)
+	cos2 = xp/hyp(xp, yp)
 	cos3 = -x/hyp(x , y )
 	cos4 = xp/hyp(xp, y )
 
@@ -37,12 +37,12 @@ def calc_angle(x, y):
 	T4 = 0 - T3
 
 	## Calculate other two tensions
-	T1 = np.abs((m*g + T3*(tan2*cos3 - sin2) + T4*(tan2*cos4 - sin4))/(sin1 - tan2*cos1))
-	T2 = np.abs((m*g + T3*(tan1*cos3 - sin3) + T4*(tan1*cos4 - sin4))/(sin2 - tan1*cos2))
+	T1 = (m*g + T3*(tan2*cos3 - sin2) + T4*(tan2*cos4 - sin4))/(sin1 - tan2*cos1)
+	T2 = (m*g + T3*(tan1*cos3 - sin3) + T4*(tan1*cos4 - sin4))/(sin2 - tan1*cos2)
 
 	## Calculate the rotation of the robot
-	phi_top = (-h*T1*cos1 + w*T4*sin2 - h*T2*cos2 + w*T4*sin4 - .5*w*m*g)
-	phi_bot = ( h*T1*sin1 + h*T2*sin2 + w*T2*cos2 - w*T4*cos4 + .5*h*m*g)
+	phi_top = (-h*T1*cos1 + w*T4*sin2 - h*T2*cos2 + w*T4*sin4 + .5*w*m*g)
+	phi_bot = ( h*T1*sin1 + h*T2*sin2 + w*T2*cos2 + w*T4*cos4 + .5*h*m*g)
 
 	angle = np.arctan2(phi_top, phi_bot) 
 
