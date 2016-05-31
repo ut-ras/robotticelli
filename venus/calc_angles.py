@@ -41,11 +41,12 @@ def calc_angle(x, y):
 	T2 = (m*g + T3*(tan1*cos3 - sin3) + T4*(tan1*cos4 - sin4))/(sin2 - tan1*cos2)
 
 	## Calculate the rotation of the robot
-	phi_top = (-h*T1*cos1 + w*T4*sin2 - h*T2*cos2 + w*T4*sin4 + .5*w*m*g)
-	phi_bot = ( h*T1*sin1 + h*T2*sin2 + w*T2*cos2 + w*T4*cos4 + .5*h*m*g)
+	phi_top = -(-h*T1*cos1 + w*T2*sin2 - h*T2*cos2 + w*T4*sin4 - .5*w*m*g)
+	phi_bot = (-h*T1*sin1 - h*T2*sin2 - w*T2*cos2 - w*T4*cos4 + .5*h*m*g)
 
-	angle = np.arctan2(phi_top, phi_bot) 
+	angle = np.arctan(phi_top/phi_bot)
 
+	print angle
 	return [np.cos(angle), np.sin(angle)]
 
 x_axis = np.linspace(b, W - b, 40)
