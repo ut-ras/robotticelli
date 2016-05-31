@@ -46,7 +46,6 @@ def calc_angle(x, y):
 
 	angle = np.arctan(phi_top/phi_bot)
 
-	print angle
 	return [np.cos(angle), np.sin(angle)]
 
 x_axis = np.linspace(b, W - b, 40)
