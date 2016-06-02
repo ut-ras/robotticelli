@@ -11,7 +11,7 @@ m  = 10   #The robot mass in kg
 h  = .5   #Robot height in m
 w  = .5   #Robot width in m
 
-b  = W * .0001    #Buffer in meters between the edge of the wall and the edge of the mural   
+b  = W * .0000    #Buffer in meters between the edge of the wall and the edge of the mural   
 
 def calc_angle(x, y): 
 	xp = W - x
@@ -33,8 +33,8 @@ def calc_angle(x, y):
 	cos4 = xp/hyp(xp, y )
 
 	## Calculate dummy variables for tension
-	T3 = 0 * x/W 
-	T4 = 0 - T3
+	T3 = m*g *(x/W)**2 
+	T4 = m*g - T3
 
 	## Calculate other two tensions
 	T1 = (m*g + T3*(tan2*cos3 - sin2) + T4*(tan2*cos4 - sin4))/(sin1 - tan2*cos1)
