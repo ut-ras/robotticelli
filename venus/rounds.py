@@ -1,94 +1,85 @@
-# In this step, we need to divide the image into disjoint sets. Each set
-# must satisfy the following properites:
-#       - contain at most N colors, where N is the number of cans
-#       - for each color, have at most (max pixels per can) pixels
-# The ideal solution will form a set that maximizes the number of pixels
-# sprayed and minimize distance between pixels. It's important to create
-# a set of adjacent pixels rather than a sparse array.
+import numpy as np 
+import time
+from scipy.spatial.distance import cdist
 
-# Inputs:
-#       - pixels                numpy.ndarray of Integers
-#       - max pixels per can    Integer
-#       - number of cans        Integer
-# Outputs:
-#       - set(([(x, y, can number)], [(color, can number)]))
 
-from neighbor import Index
-import random
-import argparse
-import numpy as np
-import math
 
-def find_clusters(pixels, number_of_labels, max_per_cluster=100):
-    idx = Index()
+def find_nearest_neighbor(coordinate, coordinate_list):
+	neighbor_distances = cdist([coordinate], coordinate_list)
+	nn_idx = np.argmin(neighbor_distances)
 
-    # Insert all pixels into the rtree
-    for y in range(pixels.shape[0]):
-        for x in range(pixels.shape[1]):
-            idx.insert((x, y, pixels[y][x]), set([(x, y, pixels[y][x])]))
-    w, h = pixels.shape
+	return coordinate_list[nn_idx][:], nn_idx;
 
-    # left bottom right top
-    bbox = (0, 0, h, w)
+## TODO: Implement Christofide's Heuristic for find_short_path
+def find_short_path(coordinate_list):
+	path = []
+	coordinate_list = list(coordinate_list)
 
-    level, performed_merge = 0, True
-    while performed_merge:
-        performed_merge = False
+	if len(coordinate_list) == 0:
+		raise("coordinate list empty")
 
-        # cluster into next level
-        next_tree = Index()
-        num_pixels = np.bincount(pixels.reshape(h*w))
-        for color in range(number_of_labels):
-            # random dist
-            pop = int(math.ceil(1.0*num_pixels[color]/max_per_cluster))
-            for _ in range(pop):
-                objs = idx.points
-                color_map = idx.getpoints(color)
-                if not color_map: continue
-                center = random.sample(color_map, 1)[0]
-                new_cluster = center[1]
-                idx.delete(center[0])
-                for cluster in idx.nearest(center[0], max_per_cluster):
-                    obj = cluster[1]
-                    if len(obj | new_cluster) <= max_per_cluster:
-                        performed_merge = bool(obj - new_cluster)
-                        new_cluster = new_cluster.union(obj)
-                        idx.delete(cluster[0])
+	## Copies first element into new array
+	nearest_neighbor, nn_idx = coordinate_list[0][:], 0;
 
-                # find new center of cluster
-                if new_cluster:
-                    x, y, _ = map(lambda x: sum(x)/len(x), zip(*new_cluster))
-                    next_tree.insert((x, y, color), new_cluster)
+	## Removes from list so no-self matching occurs
+	del coordinate_list[nn_idx]
+	path.append(nearest_neighbor)
 
-        assert(len(idx) == 0)
-        idx = next_tree
-        level += 1
-    print([i[1] for i in idx.points])
-    return idx.points
+	for _ in range(len(coordinate_list)):
 
-def solve_rounds(pixels, number_of_cans, max_pixels_per_can=100):
-    clusters = find_clusters(pixels, number_of_cans, max_per_cluster=max_pixels_per_can)
+		nearest_neighbor, nn_idx = find_nearest_neighbor(nearest_neighbor, coordinate_list);
 
-def main():
-    parser = argparse.ArgumentParser('venus')
-    parser.add_argument('-i', '--image', type=str)
-    parser.add_argument('-m', '--max-pixels-per-can', type=int, default=100)
-    parser.add_argument('-n', '--number-of-cans', type=int, default=4)
+		del coordinate_list[nn_idx]
+		path.append(nearest_neighbor)
 
-    args = parser.parse_args()
-    sample = [
-        [9, 9, 9, 9, 9, 1, 0, 9],
-        [9, 9, 9, 9, 9, 1, 0, 0],
-        [9, 9, 9, 9, 1, 1, 1, 1],
-        [9, 9, 0, 1, 1, 9, 1, 9],
-        [0, 0, 1, 1, 9, 9, 9, 9],
-        [9, 9, 0, 9, 9, 0, 0, 0],
-        [9, 9, 9, 9, 9, 0, 0, 0],
-        [9, 9, 9, 9, 9, 1, 1, 1]
-    ]
-    cluster_size = 3
-    num_cans = 1
-    solve_rounds(np.array(sample), num_cans, 100, cluster_size)
 
-if __name__ == '__main__':
-    main()
+	return path + coordinate_list
+
+def solve_rounds(pixels, max_pixels_per_can=100):
+	output = []
+
+	## "Straining" pixels by value
+	picture_mod   = pixels.shape[0]
+
+	pixels = pixels.reshape(pixels.size, 1)
+	unique = np.unique(pixels)
+
+	for unique_value in unique:
+		filtered_idx = np.where(pixels == unique_value)
+
+		x_coords = np.remainder(filtered_idx[0], picture_mod)
+		y_coords = np.floor_divide(filtered_idx[0], picture_mod)
+
+		coords   = np.transpose([x_coords, y_coords])
+
+		## Ordering pixels
+
+		ordered = np.array(find_short_path(coords))
+		order_s = ordered.shape[0]
+
+		num_divisions = int(order_s/max_pixels_per_can) + 1
+
+		if num_divisions > 0:
+			split_points  = [i*max_pixels_per_can for i in range(num_divisions)]
+			output.append(np.array_split(ordered, split_points)[1:])
+		else:
+			output.append(ordered)
+
+
+	print(output)
+
+
+sample = [
+    [9, 9, 9, 9, 9, 1, 0, 9],
+    [9, 9, 9, 9, 9, 1, 0, 0],
+    [9, 9, 9, 9, 1, 1, 1, 1],
+    [9, 9, 0, 1, 1, 9, 1, 9],
+    [0, 0, 1, 1, 9, 9, 9, 9],
+    [9, 9, 0, 9, 9, 0, 0, 0],
+    [9, 9, 9, 9, 9, 0, 0, 0],
+    [9, 9, 9, 9, 9, 1, 1, 1]
+]
+
+
+solve_rounds(np.array(sample), 10)
+
