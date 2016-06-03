@@ -11,8 +11,13 @@ m  = 10   #The robot mass in kg
 h  = .5   #Robot height in m
 w  = .5   #Robot width in m
 
-b  = W * .0000    #Buffer in meters between the edge of the wall and the edge of the mural   
+bx = W * .1   #Buffer in meters between the edge of the wall and the edge of the mural   
+by = H * .1
 
+H = float(H)
+W = float(W)
+
+## Calculates the direction of +X on the robot
 def calc_angle(x, y): 
 	xp = W - x
 	yp = H - y
@@ -42,24 +47,54 @@ def calc_angle(x, y):
 
 	## Calculate the rotation of the robot
 	phi_top = -(-h*T1*cos1 + w*T2*sin2 - h*T2*cos2 + w*T4*sin4 - .5*w*m*g)
-	phi_bot = (-h*T1*sin1 - h*T2*sin2 - w*T2*cos2 - w*T4*cos4 + .5*h*m*g)
+	phi_bot =  (-h*T1*sin1 - h*T2*sin2 - w*T2*cos2 - w*T4*cos4 + .5*h*m*g)
 
 	angle = np.arctan(phi_top/phi_bot)
 
 	return [np.cos(angle), np.sin(angle)]
 
-x_axis = np.linspace(b, W - b, 40)
-y_axis = np.linspace(b, H - b, 40)
+
+## Takes an pixel's Y coordinates and maps them to new coordinates along the wall
+def map_to_wall(coordinate, size, can_number):
+
+	## Robot layout:
+	## RIGHT (-) [---1----2-XX-3----4---] LEFT (+)
+
+	## XX marks this middle of the robot
+	## #'s mark the can number
+
+	x_center = coordinate[0]
+	y_center = coordinate[1]
+
+	x_size = size[0]
+	y_size = size[1]
+
+	## Maps the X,Y centers to the wall
+	x_adjusted = (x_center * W - 2*bx)/x_size + bx
+	y_adjusted = (y_center * H - 2*by)/y_size + by
+
+	offset_direction = calc_angle(x_adjusted, y_adjusted)
 
 
-def adjust(coordinate, can_number):
-	return coordinate
+	##Approximation of the can's holder size
+	##Estimations will be replaced with 
+	##Measurements later.
+	holder_len = w/4 - .05
+	
+	can_location_x = x_adjusted + holder_len*(can_number - 5/2)*offset_direction[0]
+	can_location_y = y_adjusted - holder_len*(can_number - 5/2)*offset_direction[1] 
+
+
+	return [can_location_x, can_location_y]
 
 
 if __name__ == "__main__":
 	## For vector plot
+	x_axis = np.linspace(bx, W - bx, 40)
+	y_axis = np.linspace(by, H - by, 40)
 
 	X, Y, EX, EY = [], [], [], []
+
 	for x in x_axis:
 		for y in y_axis:
 			X.append(x)
