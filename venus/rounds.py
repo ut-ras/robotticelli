@@ -2,6 +2,18 @@ import numpy as np
 import time
 from scipy.spatial.distance import cdist
 
+## TRAVELING SALESMAN ROUNDS SOLVER
+## 	TAKES A LABEL MAP OF THE IMAGE (COLORS ASSIGNED NUMBERS)
+## 	AND FINDS A PATH FOR THE ROBOT TO NAVIGATE THROUGH THE
+## 	IMAGE.
+
+## OUTPUT IS A 3-D LIST WHOSE DIMENSIONS HAVE THE FOLLOWING FORMAT:
+## +COLORS
+## ++PATHS (OF A DEFINED LENGTH)
+## +++INDIVIDUAL POINTS
+
+## COLORS CONTAINS A HEADER WITH THE LABEL NUMBER
+
 
 
 def find_nearest_neighbor(coordinate, coordinate_list):
@@ -38,6 +50,7 @@ def find_short_path(coordinate_list):
 def solve_rounds(pixels, max_pixels_per_can=100):
 	output = []
 
+	pixels = np.array(pixels)
 	## "Straining" pixels by value
 	picture_mod   = pixels.shape[0]
 
@@ -49,7 +62,6 @@ def solve_rounds(pixels, max_pixels_per_can=100):
 
 		x_coords = np.remainder(filtered_idx[0], picture_mod)
 		y_coords = np.floor_divide(filtered_idx[0], picture_mod)
-
 		coords   = np.transpose([x_coords, y_coords])
 
 		## Ordering pixels
@@ -61,25 +73,25 @@ def solve_rounds(pixels, max_pixels_per_can=100):
 
 		if num_divisions > 0:
 			split_points  = [i*max_pixels_per_can for i in range(num_divisions)]
-			output.append(np.array_split(ordered, split_points)[1:])
+			output.append([unique_value] + np.array_split(ordered, split_points)[1:])
 		else:
-			output.append(ordered)
+			output.append([unique_value] + ordered)
+
+	return output
 
 
-	print(output)
 
+if __name__ == "__main__":
+	sample = [
+	    [9, 9, 9, 9, 9, 1, 0, 9],
+	    [9, 9, 9, 9, 9, 1, 0, 0],
+	    [9, 9, 9, 9, 1, 1, 1, 1],
+	    [9, 9, 0, 1, 1, 9, 1, 9],
+	    [0, 0, 1, 1, 9, 9, 9, 9],
+	    [9, 9, 0, 9, 9, 0, 0, 0],
+	    [9, 9, 9, 9, 9, 0, 0, 0],
+	    [9, 9, 9, 9, 9, 1, 1, 1]
+	]
 
-sample = [
-    [9, 9, 9, 9, 9, 1, 0, 9],
-    [9, 9, 9, 9, 9, 1, 0, 0],
-    [9, 9, 9, 9, 1, 1, 1, 1],
-    [9, 9, 0, 1, 1, 9, 1, 9],
-    [0, 0, 1, 1, 9, 9, 9, 9],
-    [9, 9, 0, 9, 9, 0, 0, 0],
-    [9, 9, 9, 9, 9, 0, 0, 0],
-    [9, 9, 9, 9, 9, 1, 1, 1]
-]
-
-
-solve_rounds(np.array(sample), 10)
+	print solve_rounds(np.array(sample), 10)
 

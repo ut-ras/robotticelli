@@ -52,20 +52,25 @@ x_axis = np.linspace(b, W - b, 40)
 y_axis = np.linspace(b, H - b, 40)
 
 
-## For vector plot
+def adjust(coordinate, can_number):
+	return coordinate
 
-X, Y, EX, EY = [], [], [], []
-for x in x_axis:
-	for y in y_axis:
-		X.append(x)
-		Y.append(y)
-		EX.append(calc_angle(x, y)[0])
-		EY.append(calc_angle(x, y)[1])
-plt.quiver(X,Y,EX,EY)
 
-## For heatmap
+if __name__ == "__main__":
+	## For vector plot
 
-# out = calc_angle(x_axis[:,None], y_axis[None,:])
-# plt.pcolor(out,cmap=plt.cm.Reds)
+	X, Y, EX, EY = [], [], [], []
+	for x in x_axis:
+		for y in y_axis:
+			X.append(x)
+			Y.append(y)
+			EX.append(calc_angle(x, y)[0])
+			EY.append(calc_angle(x, y)[1])
+	plt.quiver(X,Y,EX,EY)
 
-plt.show()
+	## For heatmap
+
+	# out = calc_angle(x_axis[:,None], y_axis[None,:])
+	# plt.pcolor(out,cmap=plt.cm.Reds)
+
+	plt.show()
