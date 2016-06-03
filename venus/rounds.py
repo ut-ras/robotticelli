@@ -1,5 +1,8 @@
+from __future__ import print_function
+
 import numpy as np 
 import time
+
 from scipy.spatial.distance import cdist
 
 ## TRAVELING SALESMAN ROUNDS SOLVER
@@ -37,8 +40,10 @@ def find_short_path(coordinate_list):
 	del coordinate_list[nn_idx]
 	path.append(nearest_neighbor)
 
-	for _ in range(len(coordinate_list)):
+	coordinate_list_len = len(coordinate_list)
+	for i in range(coordinate_list_len):
 
+		print(str(np.round(float(i) * 100/coordinate_list_len, 4)) + "%", end="\r")
 		nearest_neighbor, nn_idx = find_nearest_neighbor(nearest_neighbor, coordinate_list);
 
 		del coordinate_list[nn_idx]
@@ -58,6 +63,9 @@ def solve_rounds(pixels, max_pixels_per_can=100):
 	unique = np.unique(pixels)
 
 	for unique_value in unique:
+
+		print("finding short path for label " + str(unique_value))
+
 		filtered_idx = np.where(pixels == unique_value)
 
 		x_coords = np.remainder(filtered_idx[0], picture_mod)
@@ -93,5 +101,5 @@ if __name__ == "__main__":
 	    [9, 9, 9, 9, 9, 1, 1, 1]
 	]
 
-	print solve_rounds(np.array(sample), 10)
+	print(solve_rounds(np.array(sample), 10))
 
