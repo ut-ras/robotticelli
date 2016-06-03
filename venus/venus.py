@@ -5,29 +5,18 @@ import collections
 
 import rounds as round_solver
 
-from calc_angles import adjust
+from calc_angles import map_to_wall
 
 def main():
 	parser = argparse.ArgumentParser('venus')
-	#parser.add_argument('-l', '--labels', type=str, required=True)
+	parser.add_argument('-l', '--labels', type=str, required=True)
 	parser.add_argument('-s', '--slots',  type=int, default =4)
 	parser.add_argument('-p', '--pixels', type=int, default =100)
 	parser.add_argument('-w', '--write',  type=str, required=True)
 
-	sample = [
-	    [9, 9, 9, 9, 9, 1, 0, 9],
-	    [9, 9, 9, 9, 9, 1, 0, 0],
-	    [9, 9, 9, 9, 1, 1, 1, 1],
-	    [9, 9, 0, 1, 1, 9, 1, 9],
-	    [0, 0, 1, 1, 9, 9, 9, 9],
-	    [9, 9, 0, 9, 9, 0, 0, 0],
-	    [9, 9, 9, 9, 9, 0, 0, 0],
-	    [9, 9, 9, 9, 9, 1, 1, 1]
-	]
-
 	args = parser.parse_args()
-	#labels = np.load(args.labels)
-	rounds = round_solver.solve_rounds(sample, args.pixels)
+	labels = np.load(args.labels)
+	rounds = round_solver.solve_rounds(labels, args.pixels)
 
 	output = open(args.write, "w")
 
@@ -37,7 +26,7 @@ def main():
 		output.write("\nLABEL " + str(colors[0]) + "\n")
 		for path in colors[1:]:
 			for point in path:
-				point = adjust(point, can_number)
+				point = map_to_wall(point, labels.shape, can_number)
 				output.write(str(can_number) + " - (" + str(point[0]) + "," + str(point[1]) + ")\n")
 
 			can_number = (can_number + 1) % args.slots
