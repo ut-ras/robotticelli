@@ -185,10 +185,15 @@ def detect_colors(image, palette_size, color_database, quick = False, entire = F
 
     # merges similar colors to reduce palette to palette_size
 
-    reduced_colors = color_database
+    reduced_colors = uniqueColors
 
     if not doNotMerge and not entire:
         reduced_colors = merge(uniqueColors, palette_size, image = (False if quick else image))
+
+    if entire:
+        reduced_colors = color_database
+
+    print(type(reduced_colors), reduced_colors)
 
     # finds best palette
     new_palette, palette_indexes = convert_to_database_palette(color_database if entire else reduced_colors, color_database)
@@ -213,6 +218,36 @@ def checkInconsistent(image):
 
     print("final colors in image: " + str(uniqueColors))
 
+def primavera(image, palette_size, save_image, save_labels, colors, dither, resize, overshoot, merge, quick, entire):
+    img  = cv2.imread(image)
+
+    if img is None:
+        raise ValueError("Invalid image file/format")
+
+    if resize != 1:
+        img = sp.misc.imresize(img, resize)
+
+    database = json.load(open(colors))
+    names    = np.array(list(database.keys()))
+    colors   = np.array([list(reversed(val)) for val in database.values()])
+
+    palette, labels, image = detect_colors(img, palette_size, colors, quick, entire, overshoot, merge)
+
+    print('\n'.join(names[palette]))
+
+    if dither:
+        dither = importlib.import_module('dither.%s' % dither).dither
+        image  = dither(img, image, colors[palette])
+
+    #checkInconsistent(image)
+
+    if save_labels:
+        np.save(save_labels, labels)
+
+    if save_image:
+        cv2.imwrite(save_image, image)
+
+
 def main():
     parser = argparse.ArgumentParser('primavera')
     parser.add_argument('-i', '--image', required=True)
@@ -228,34 +263,12 @@ def main():
     parser.add_argument('-e', '--entire', action="store_true")
 
     args = parser.parse_args()
-    img  = cv2.imread(args.image)
 
-    if img is None:
-        raise ValueError("Invalid image file/format")
-
-    if args.resize != 1:
-        img = sp.misc.imresize(img, args.resize)
-
-    database = json.load(open(args.colors))
-    names    = np.array(list(database.keys()))
-    colors   = np.array([list(reversed(val)) for val in database.values()])
-
-    palette, labels, image = detect_colors(img, args.palette_size, colors, args.quick, args.entire, args.overshoot, args.merge)
-
-    print('\n'.join(names[palette]))
-
-    if args.dither:
-        dither = importlib.import_module('dither.%s' % args.dither).dither
-        image  = dither(img, image, colors[palette])
-
-    #checkInconsistent(image)
-
-    if args.save_labels:
-        np.save(args.save_labels, labels)
-
-    if args.save_image:
-        cv2.imwrite(args.save_image, image)
-
-
+    primavera(image=args.image, palette_size=args.palette_size, save_image=args.save_image,
+              save_labels=args.save_labels, colors=args.colors, dither=args.dither, 
+              resize=args.resize, overshoot=args.overshoot, merge=args.merge,
+              quick=args.quick, entire=args.entire)
+    
 if __name__ == '__main__':
     main()
+
