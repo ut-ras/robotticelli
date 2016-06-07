@@ -7,7 +7,14 @@
 #include <rtos.h>
 #include <XBeeLib.h>
 
-#include "packet.h"
+
+struct packet {
+    uint8_t data[100];
+    uint16_t len;
+    bool broadcast;
+    uint64_t remote_addr64;
+    uint16_t remote_addr16;
+};
 
 #ifndef RADIO_QUEUE_SIZE
 #define RADIO_QUEUE_SIZE 16

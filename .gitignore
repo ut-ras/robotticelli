@@ -29,3 +29,11 @@
 
 build*/
 bin*/
+
+.board-config.json
+L3GD20/
+LSM303DLHC/
+Servo/
+XBeeLib/
+frdm-magi.map
+mbed-rtos/
