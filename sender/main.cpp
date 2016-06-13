@@ -3,42 +3,38 @@
 #include <rtos.h>
 
 #include <XBeeLib.h>
-#include <Servo.h>
-#include <radio.h>
 
+#include <radio.h>
+#include "servo.h"
 #include "pin_map.h"
 
-using namespace XBeeLib;
+#define PAINT_NEUTRAL 0.5
+#define PAINT_SPRAY -0.5
+#define PAINT_TIME 0.7
 
-#define PAINT_NEUTRAL 0.85
-#define PAINT_SPRAY 1.0
-#define PAINT_RANGE 0.0008
-#define PAINT_TIME 0.2
 
 
 Servo paint_heads[SERVO_COUNT] = {
-    Servo(PTD2),
-    Servo(PTD0),
-    Servo(PTC4),
-    Servo(PTA0),
+    Servo(PTD2, 2000),
+    Servo(PTD0, 2000),
+    Servo(PTC4, 2000),
+    Servo(PTA0, 2000),
 };
 
 int main()
 {
     DigitalIn sw2(SW2);
     DigitalIn sw3(SW3);
-    PwmOut pwm(PTC3);
-    pwm.write(.1);
 
     for (int i = 0; i < SERVO_COUNT; i++) {
-        paint_heads[i].calibrate(PAINT_RANGE);
-        paint_heads[i].write(PAINT_NEUTRAL);
+        paint_heads[i] = PAINT_NEUTRAL;
     }
 
-    radio_init();
+    radio_init(1500);
 
     const uint64_t remote_addr64 = UINT64(0x0013A200, 0x40d4f162);
-    const RemoteXBeeZB remoteDevice = RemoteXBeeZB(remote_addr64);
+    const XBeeLib::RemoteXBeeZB remoteDevice = XBeeLib::RemoteXBeeZB(
+            remote_addr64);
 
     packet pkt;
     const char *data = "what's up man?";
@@ -49,8 +45,7 @@ int main()
     radio_bcast(pkt);
     radio_send(pkt, remoteDevice);
 
-    int current_head = 0;
-    int toggle = 0;
+    uint8_t current_head = 0;
 
     while (true) {
         packet pkt;
@@ -67,21 +62,17 @@ int main()
         }
 
         if (sw2 == 0) {
-            printf("painting\n");
+            printf("painting\r\n");
             while (sw2 == 0);
-            paint_heads[current_head % SERVO_COUNT].write(PAINT_SPRAY);
+            paint_heads[current_head % SERVO_COUNT] = PAINT_SPRAY;
             wait(PAINT_TIME);
-            paint_heads[current_head % SERVO_COUNT].write(PAINT_NEUTRAL);
-            toggle = !toggle;
-            pwm.write(toggle ? 0.15 : 0.1);
+            paint_heads[current_head % SERVO_COUNT] = PAINT_NEUTRAL;
         }
 
         if (sw3 == 0) {
-            printf("head %d\n", current_head);
+            printf("head %d\r\n", current_head);
             current_head++;
             while (sw3 == 0);
-            toggle = !toggle;
-            pwm.write(toggle ? 0.15 : 0.1);
         }
     }
 }
