@@ -247,6 +247,7 @@ def primavera(image, palette_size, save_image, save_labels, colors, dither, resi
     if save_image:
         cv2.imwrite(save_image, image)
 
+    return labels
 
 def main():
     parser = argparse.ArgumentParser('primavera')
