@@ -38,8 +38,8 @@ def calc_angle(x, y):
 	cos4 = xp/hyp(xp, y )
 
 	## Calculate dummy variables for tension
-	T3 = m*g *(x/W)**2 
-	T4 = m*g - T3
+	T3 = 0 #m*g *(x/W)**2 
+	T4 = 0 #m*g - T3
 
 	## Calculate other two tensions
 	T1 = (m*g + T3*(tan2*cos3 - sin2) + T4*(tan2*cos4 - sin4))/(sin1 - tan2*cos1)
