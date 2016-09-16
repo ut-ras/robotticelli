@@ -48,7 +48,7 @@ if __name__ == '__main__' :
         if args.mark is not None \
            and board.getUniqueID().upper().endswith(args.mark.upper()) :
             config[board.getUniqueID()] = args.firmware[0]
-        if board.getUniqueID() in config \
+        if unicode(board.getUniqueID()) in config \
            and config[board.getUniqueID()] in args.firmware :
             print("Flashing board {} with {}".format(board.getUniqueID()
                                                      , config[board.getUniqueID()]))

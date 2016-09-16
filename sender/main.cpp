@@ -13,6 +13,8 @@
 #define PAINT_TIME 0.7
 
 
+Serial *log_serial;
+
 
 Servo paint_heads[SERVO_COUNT] = {
     Servo(PTD2, 2000),
@@ -23,6 +25,8 @@ Servo paint_heads[SERVO_COUNT] = {
 
 int main()
 {
+    log_serial = new Serial(DEBUG_TX, DEBUG_RX);
+    log_serial->baud(9600);
     DigitalIn sw2(SW2);
     DigitalIn sw3(SW3);
 
@@ -46,6 +50,8 @@ int main()
     radio_send(pkt, remoteDevice);
 
     uint8_t current_head = 0;
+
+    log_serial->printf("Hello!\r\n");
 
     while (true) {
         packet pkt;
