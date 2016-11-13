@@ -9,6 +9,7 @@ import scipy as sp
 from scipy.spatial.distance import cdist
 from sklearn.cluster import MiniBatchKMeans
 
+
 def convert_to_database_palette(image, color_database):
     """ A collection of indexes to the colors in our database that best
     represents its respective pixel sp.spatial.distance.cdist finds the
@@ -16,8 +17,9 @@ def convert_to_database_palette(image, color_database):
     np.argmin finds the index of the smallest distance (aka the closest color)
     """
 
-    # print(type(image))
     # Print(color_database)
+    print image
+    print color_database
     database_indexes = np.argmin(cdist(image, color_database), axis=1)
 
     # Takes the indexes found in db_idx (color database indexes) and creates
@@ -119,7 +121,7 @@ def merge(color_set, final_value, image = False):
 
 def median_cut(image, palette_size, color_database, deposit_c, overshoot, iternum = 0):
     # Hacky way of getting iterations from power
-    iterations = palette_size.bit_length() + overshoot
+    iterations = np.ceil(np.log(palette_size)/np.log(2)) + overshoot
 
     # Finds ranges for RGB
     ranges = np.max(a = image, axis = 0) - np.min(a = image, axis = 0)
@@ -181,8 +183,7 @@ def detect_colors(image, palette_size, color_database, quick = False, entire = F
         median_cut(image, palette_size, color_database, best_colors, overshoot)
 
     # gets rid of color repeats
-    uniqueColors = np.array(best_colors)
-    #np.unique([tuple(color) for color in best_colors])
+    uniqueColors = np.unique(tuple(color) for color in best_colors)
 
     # merges similar colors to reduce palette to palette_size
 
@@ -194,10 +195,10 @@ def detect_colors(image, palette_size, color_database, quick = False, entire = F
     if entire:
         reduced_colors = color_database
 
-    print((type(reduced_colors), reduced_colors))
+    print(type(reduced_colors), reduced_colors)
 
     # finds best palette
-    new_palette, palette_indexes = convert_to_database_palette(reduced_colors, color_database)
+    new_palette, palette_indexes = convert_to_database_palette(color_database if entire else reduced_colors, color_database)
 
     # Puts the image in terms of the spray paint palette we just found
     new_image, new_image_indexes = convert_to_database_palette(image, new_palette)
@@ -217,11 +218,10 @@ def checkInconsistent(image):
     image = image.reshape(h * w, 3)
     uniqueColors = np.unique(tuple(color) for color in image)
 
-    print(("final colors in image: " + str(uniqueColors)))
+    print("final colors in image: " + str(uniqueColors))
 
 def primavera(image, colors, dither, palette_size=5, save_image='out.png', save_labels='lout.png',
               resize=1, overshoot=1, merge=True, quick=False, entire=False):
-
     img  = cv2.imread(image)
 
     if img is None:
@@ -232,18 +232,14 @@ def primavera(image, colors, dither, palette_size=5, save_image='out.png', save_
 
     database = json.load(open(colors))
     names    = np.array(list(database.keys()))
-    colors   = np.array([list(reversed(val)) for val in list(database.values())])
+    colors   = np.array([list(reversed(val)) for val in database.values()])
 
     palette, labels, image = detect_colors(img, palette_size, colors, quick, entire, overshoot, merge)
 
-    print(('\n'.join(names[palette])))
+    print('\n'.join(names[palette]))
 
     if dither:
-        if __name__ != "main":
-            dither = importlib.import_module('%s.dither.%s' % (str(__name__)[:-10],dither)).dither
-        else:
-            dither = importlib.import_module('dither.%s' % dither).dither
-
+        dither = importlib.import_module('dither.%s' % dither).dither
         image  = dither(img, image, colors[palette])
 
     #checkInconsistent(image)
