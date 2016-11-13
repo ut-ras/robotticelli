@@ -1,3 +1,5 @@
+import numpy as np
+
 def merge(color_set, final_value, image = False):
     """Takes a color_set input and merges colors until the
     color_set is of a desired size final_value. If image

@@ -9,7 +9,7 @@ setup(
         # author_email="",
         packages=find_packages(),
         install_requires=[
-            ],
+        ],
         entry_points={
             'console_scripts': [
                 "primavera = primavera.primavera:main"
