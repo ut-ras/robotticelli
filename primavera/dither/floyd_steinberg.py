@@ -1,48 +1,30 @@
- 
+
 import numpy as np
 import scipy.spatial
 
-
-def dither(image, reduced_image, palette):
-
-    assert(image.shape == reduced_image.shape)
-
-    # TODO: use better dithering algorithm
-    # Options: ordered dithering
-    print(palette)
+def dither(image, palette):
     dithered = np.pad(np.array(image),
                       ((1, 1), (1, 1), (0, 0)),
                       mode='constant').astype(int)
 
+    palette_kdtree = scipy.spatial.KDTree(palette)
+
     for x in range(1, image.shape[0] + 1):
         for y in range(1, image.shape[1] + 1):
-            
+
             oldColor = np.copy(dithered[x][y])
-            dithered[x][y] = palette[np.argmin(
-                scipy.spatial.distance.cdist(
-                    [dithered[x][y]], palette), axis=1)]
+            dithered[x][y] = palette[palette_kdtree.query(dithered[x][y], 1)[1]]
 
-            error = oldColor - np.copy(dithered[x][y]) 
+            error = np.array(oldColor - dithered[x][y]).astype(int)
             #dithered[x][y] = error
-            # NOTE: supposed to be 16, but we found 14 did better
-            preSet10 = dithered[x + 0][y + 1] + [int(i) for i in error * 7./14]
-            preSetN1 = dithered[x + 1][y - 1] + [int(i) for i in error * 3./14]
-            preSet01 = dithered[x + 1][y + 0] + [int(i) for i in error * 5./14]
-            preSet11 = dithered[x + 1][y + 1] + [int(i) for i in error * 1./14]
+            preSet10 = dithered[x + 0][y + 1] + error * 7./16
+            preSetN1 = dithered[x + 1][y - 1] + error * 3./16
+            preSet01 = dithered[x + 1][y + 0] + error * 5./16
+            preSet11 = dithered[x + 1][y + 1] + error * 1./16
 
-            preSet01[preSet01 > 255] = 255
-            preSetN1[preSetN1 > 255] = 255
-            preSet10[preSet10 > 255] = 255
-            preSet11[preSet11 > 255] = 255
-
-            preSet01[preSet01 < 0] = 0
-            preSetN1[preSetN1 < 0] = 0
-            preSet10[preSet10 < 0] = 0
-            preSet11[preSet11 < 0] = 0
-
-            dithered[x + 0][y + 1] = preSet01
-            dithered[x + 1][y - 1] = preSetN1
-            dithered[x + 1][y + 0] = preSet10
-            dithered[x + 1][y + 1] = preSet11
+            dithered[x + 0][y + 1] = np.clip(preSet01, 0, 255)
+            dithered[x + 1][y - 1] = np.clip(preSetN1, 0, 255)
+            dithered[x + 1][y + 0] = np.clip(preSet10, 0, 255)
+            dithered[x + 1][y + 1] = np.clip(preSet11, 0, 255)
 
     return dithered[1:-1, 1:-1, :]

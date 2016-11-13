@@ -1,3 +1,3 @@
 
-def dither(image, reduced_image, palette):
-    return reduced_image
+def dither(image, palette):
+    return image

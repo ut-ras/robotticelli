@@ -29,9 +29,9 @@ def primavera(image, colors, dither, palette_size=5, save_image='out.png', save_
         if __name__ != "main":
             dither = importlib.import_module('%s.dither.%s' % (str(__name__)[:-10],dither)).dither
         else:
-            dither = importlib.import_module('dither.%s' % dither).dither
+            dither = importlib.import_module('.dither.%s' % dither).dither
 
-        image  = dither(img, image, colors[palette])
+        image  = dither(img, colors[palette])
 
     #checkInconsistent(image)
 

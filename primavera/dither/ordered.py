@@ -3,8 +3,7 @@ import numpy as np
 import scipy.spatial
 
 
-def dither(image, reduced_image, palette):
-    assert(image.shape == reduced_image.shape)
+def dither(image, palette):
 
     thresholdMap = [
         [01./65, 49./65, 13./65, 61./65,  4./65, 52./65, 16./65, 64./65],
