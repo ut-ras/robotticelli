@@ -2,6 +2,9 @@ import numpy as np
 from numpy import hypot as hyp
 import matplotlib.pyplot as plt
 
+# numpy.linalg.solve
+# numpy.solve
+# numpy.linalg.inverse
 
 H  = 10   #Wall Height in m
 W  = 20   #Wall Width in m
