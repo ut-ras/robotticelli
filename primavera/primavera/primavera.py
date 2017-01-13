@@ -2,7 +2,6 @@ import argparse
 import importlib
 import math
 import json
-import cv2
 import numpy as np
 import scipy as sp
 
@@ -11,7 +10,7 @@ from .modules.colors import detect_colors
 def primavera(image, colors, dither, palette_size=5, save_image='out.png', save_labels='lout.png',
               resize=1, overshoot=1, merge=True, quick=False, entire=False):
 
-    img  = cv2.imread(image)
+    img  = sp.misc.imread(image)
 
     if img is None:
         raise ValueError("Invalid image file/format")
