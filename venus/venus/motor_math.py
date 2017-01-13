@@ -1,4 +1,5 @@
 import numpy as np
+from settings import *
 
 def transform(r1, r2, vec):
 	'''
@@ -13,10 +14,18 @@ def xytransform(x, y, vec):
 	'''
 	Finds r1 and r2 based on x,y and then does a basis transform of vec
 	'''
-	#to be implemented
+	return transform([-x, H - y], [W - x, H - y], vec)
+
+def get_motor_spin_ratio(x, y, vec):
+	'''
+	Gives ratio of top left motor to top right motor using our solved input
+	Negative is out, positive is in
+	'''
+	res = xytransform(x, y, vec)
+	return res/(max(abs(res[0]),abs(res[1])) or 1)
 
 def main():
-	print transform((3,1), (1,2), (9,8))
+	print(get_motor_spin_ratio(10, 5, (1,0)))
 
 if __name__ == '__main__':
 	main()

@@ -1,27 +1,16 @@
 import numpy as np
 from numpy import hypot as hyp
 import matplotlib.pyplot as plt
-
+import * from settings
 # numpy.linalg.solve
 # numpy.solve
 # numpy.linalg.inverse
-
-H  = 10   #Wall Height in m
-W  = 20   #Wall Width in m
-g  = 9.81 #Acceleration of gravity in m/s^2
-m  = 10   #The robot mass in kg
-
-h  = .5   #Robot height in m
-w  = .5   #Robot width in m
-
-bx = W * .1   #Buffer in meters between the edge of the wall and the edge of the mural   
-by = H * .1
 
 H = float(H)
 W = float(W)
 
 ## Calculates the direction of +X on the robot
-def calc_angle(x, y): 
+def calc_angle(x, y):
 	xp = W - x
 	yp = H - y
 
@@ -41,7 +30,7 @@ def calc_angle(x, y):
 	cos4 = xp/hyp(xp, y )
 
 	## Calculate dummy variables for tension
-	T3 = 0 #m*g *(x/W)**2 
+	T3 = 0 #m*g *(x/W)**2
 	T4 = 0 #m*g - T3
 
 	## Calculate other two tensions
@@ -80,12 +69,12 @@ def map_to_wall(coordinate, size, can_number):
 
 
 	##Approximation of the can's holder size
-	##Estimations will be replaced with 
+	##Estimations will be replaced with
 	##Measurements later.
 	holder_len = w/4 - .05
-	
+
 	can_location_x = x_adjusted + holder_len*(can_number - 5/2)*offset_direction[0]
-	can_location_y = y_adjusted - holder_len*(can_number - 5/2)*offset_direction[1] 
+	can_location_y = y_adjusted - holder_len*(can_number - 5/2)*offset_direction[1]
 
 
 	return [can_location_x, can_location_y]
