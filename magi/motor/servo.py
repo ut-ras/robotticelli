@@ -20,16 +20,11 @@ class Servo_PWM:
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(fwd, GPIO.OUT)
 
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(back, GPIO.OUT)
-
         ## Exporting them to class variables so that
         ## they can be used by other functions
         self.forward  = GPIO.PWM(fwd, rate)
-        self.backward = GPIO.PWM(back, rate)
 
         self.forward.begin(10)
-        self.backward.begin(10)
 
     def changeDutyCycle(duty_cycle):
         '''
