@@ -9,7 +9,7 @@ class Servo_PWM:
 
     forward = None
 
-    def __init__(self, fwd, back, rate=50):
+    def __init__(self, fwd, back, rate=500):
         '''
             Starts PWM on the fwd pin and
             back pin, with a rate of [rate]
