@@ -1,4 +1,4 @@
-import RPi.GPIO as GPIO
+import RPIO.GPIO as GPIO
 
 class Motor_PWM:
     '''

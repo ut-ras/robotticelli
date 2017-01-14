@@ -1,9 +1,0 @@
-[submodule "primavera"]
-	path = primavera
-	url = git@github.com:ut-ras/primavera.git
-[submodule "venus"]
-	path = venus
-	url = git@github.com:ut-ras/venus.git
-[submodule "magi"]
-	path = magi
-	url = git@github.com:ut-ras/magi.git
