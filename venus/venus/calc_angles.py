@@ -1,10 +1,7 @@
 import numpy as np
 from numpy import hypot as hyp
 import matplotlib.pyplot as plt
-if name == __main__:
-	import * from settings
-else:
-	import * from conf
+from settings import *
 
 # numpy.linalg.solve
 # numpy.solve

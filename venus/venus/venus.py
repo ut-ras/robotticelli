@@ -18,9 +18,6 @@ def main():
 
 	venus(args.labels, args.slots, args.pixels, args.write)
 
-if __name__ == '__main__':
-    main()
-
 def venus(labels, slots, pixels, write): 
 	labels = np.load(labels)
 
@@ -40,3 +37,6 @@ def venus(labels, slots, pixels, write):
 
 			if can_number == 0:
 				output.write("\nSTOP\n")
+
+if __name__ == '__main__':
+    main()
