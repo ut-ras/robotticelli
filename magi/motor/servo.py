@@ -33,7 +33,7 @@ class Servo_PWM:
 
     def changeDutyCycle(duty_cycle):
         '''
-            Changes the speed of a motor. [speed] is a
+            Changes the duty cycle of a servo. [duty_cycle] is a
             float between 0 and 180, with 0 representing
             fully backwards, and 180 representing fully
             forwards
