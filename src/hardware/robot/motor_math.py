@@ -1,7 +1,7 @@
 import numpy as np
 from conf import *
 
-## Sends out turn ratios for motors
+## Generates turn ratios for motors
 
 def transform(r1, r2, vec):
 	'''
