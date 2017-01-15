@@ -2,14 +2,14 @@ import RPIO.GPIO as GPIO
 
 class Servo_PWM:
     '''
-        Class for controlling a DC Servo with PWM,
+        Class for controlling a servo with PWM,
         requires two pins per motor to function.
         Meant to be interfaced with a motor controller
     '''
 
     forward = None
 
-    def __init__(self, fwd, back, rate=500):
+    def __init__(self, fwd, rate=500):
         '''
             Starts PWM on the fwd pin and
             back pin, with a rate of [rate]
@@ -22,9 +22,8 @@ class Servo_PWM:
 
         ## Exporting them to class variables so that
         ## they can be used by other functions
-        self.forward  = GPIO.PWM(fwd, rate)
-
-        self.forward.begin(10)
+        self.forward = GPIO.PWM(fwd, rate)
+        self.forward.begin(0)
 
     def changeDutyCycle(duty_cycle):
         '''
@@ -33,16 +32,14 @@ class Servo_PWM:
             fully backwards, and 180 representing fully
             forwards
         '''
-        if duty_cycle < 0 or duty_cycle > 180:
-            raise ValueError('Speed must be between 0 and 180 inclusive')
+        if duty_cycle < 0 or duty_cycle > 100:
+            raise ValueError('Speed must be between 0 and 100 inclusive')
 
         ## There is some overlap between the two PWM channels
-        forward_duty_cycle  = max(0, speed - 80)
-
-        self.forward.ChangeDutyCycle(forward_duty_cycle)
+        self.forward.ChangeDutyCycle(duty_cycle)
 
     def stop():
         self.forward.stop()
 
     def start():
-        self.forward.start(10)
+        self.forward.start(0)
