@@ -1,7 +1,8 @@
 import numpy as np
 from numpy import hypot as hyp
 import matplotlib.pyplot as plt
-import * from settings
+from settings import *
+
 # numpy.linalg.solve
 # numpy.solve
 # numpy.linalg.inverse

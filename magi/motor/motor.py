@@ -8,7 +8,7 @@ class Motor_PWM:
     '''
 
     forward = None
-    backwrd = None
+    backward = None
 
     def __init__(self, fwd, back, rate=50):
         '''
@@ -39,7 +39,7 @@ class Motor_PWM:
             fully backwards, and 180 representing fully
             forwards
         '''
-        if speed < 0 or speed > 180)
+        if speed < 0 or speed > 180:
             raise ValueError('Speed must be between 0 and 180 inclusive')
 
         ## There is some overlap between the two PWM channels
@@ -47,7 +47,7 @@ class Motor_PWM:
         backward_duty_cycle = max(0, 100 - speed)
 
         self.forward.ChangeDutyCycle(forward_duty_cycle)
-        self.backward.ChangeDutyCycle(forward_duty_cycle)
+        self.backward.ChangeDutyCycle(backward_duty_cycle)
 
     def stop():
         self.forward.stop()

@@ -38,7 +38,7 @@ def primavera(image, colors, dither, palette_size=5, save_image='out.png', save_
         np.save(save_labels, labels)
 
     if save_image:
-        cv2.imwrite(save_image, image)
+        sp.misc.insave(save_image, image)
 
     return labels
 

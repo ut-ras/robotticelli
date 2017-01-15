@@ -18,10 +18,8 @@ def main():
 
 	venus(args.labels, args.slots, args.pixels, args.write)
 
-if __name__ == '__main__':
-    main()
-
-def venus(labels, slots, pixels, write): 
+## Rows with -1s everwhere that isn't the first spot indicate a COLOR change
+def venus(labels, slots, pixels, write):
 	labels = np.load(labels)
 
 	rounds = round_solver.solve_rounds(labels, pixels)
@@ -30,7 +28,7 @@ def venus(labels, slots, pixels, write):
 	## CREATING INSTRUCTIONS
 	can_number = 0
 	for colors in rounds:
-		output.write("\nLABEL " + str(colors[0]) + "\n")
+		output.write(str(colors[0]) + "\t-1\t-1\n")
 		for path in colors[1:]:
 			for point in path:
 				point = map_to_wall(point, labels.shape, can_number)
@@ -38,5 +36,5 @@ def venus(labels, slots, pixels, write):
 
 			can_number = (can_number + 1) % slots
 
-			if can_number == 0:
-				output.write("\nSTOP\n")
+if __name__ == '__main__':
+    main()
