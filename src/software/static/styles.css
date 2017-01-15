@@ -1,0 +1,34 @@
+html, body{
+  padding: 0px;
+  margin: 0px;
+  background-color: #DDDDDD;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.panel {
+  background-color: #AAAAAA;
+  box-sizing: border-box;
+}
+
+.panel.settings {
+    height: 90vh;
+    width: calc(100vw - 90vh - 80px);
+    padding: 5%;
+}
+
+.panel.output {
+  height: 90vh;
+  width: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.result-view {
+  max-height: 90%;
+  max-width: 90%;
+  margin: 5%;
+}

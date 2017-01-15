@@ -1,0 +1,51 @@
+<html>
+  <head>
+    <link rel='stylesheet' href="/static/styles.css" type='text/css'>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src='static/submit.js'></script>
+  </head>
+  <body>
+    <div class='panel settings'>
+      <form style='diplay: inline;' id="primavera-form" enctype="multipart/form-data">
+        image: <input type='file' accept='image/*' name='image'><br>
+        colors: <select name='colors'><br>
+          <option value='4'>4</option>
+          <option value='5'>5</option>
+          <option value='6'>6</option>
+          <option value='7'>7</option>
+          <option value='8'>8</option>
+          <option value='9'>9</option>
+          <option value='10'>10</option>
+          <option value='11'>11</option>
+          <option value='12'>12</option>
+        </select><br>
+        dither: <select name='dither'><br>
+          <option value='None'>None</option>
+          <option value='floyd_steinberg'>Floyd Steinberg</option>
+          <option value='ordered'>Ordered</option>
+        </select><br>
+        palette: <select name='palette'>
+          <option value='RGB'>red, green, blue</option>
+          <option value='CMYK'>cyan, magenta, yellow</option>
+          <option value='Montana'>spray paint</option>
+          <option value='BW'>black, white</option>
+        </select><br>
+
+        Other Options:<br>
+        overshoot: <select name='overshoot'><br>
+          <option value='0'>0</option>
+          <option value='1'>1</option>
+          <option value='2'>2</option>
+          <option value='3'>3</option>
+          <option value='4'>4</option>
+        </select><br>
+        merge-off: <input type='checkbox' name='merge'><br>
+        merge-two: <input type='checkbox' name='quick'><br>
+        <input type='submit' name='submit' value='Send'>
+      </form>
+    </div>
+    <div class='panel output'>
+      <img id='output' class='result-view' src=''>
+    </div>
+  </body>
+</html>

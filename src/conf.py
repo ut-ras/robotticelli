@@ -1,3 +1,12 @@
+#IP Destinations for robot components
+LMOTOR_IP = '0.0.0.0'
+RMOTOR_IP = '0.0.0.0'
+ROBOT_IP  = '0.0.0.0'
+
+#String "LMOTOR", "RMOTOR", "ROBOT", or "PRE"
+MODE = "PRE"
+
+# Wall parameters
 H  = 10   #Wall Height in m
 W  = 20   #Wall Width in m
 g  = 9.81 #Acceleration of gravity in m/s^2

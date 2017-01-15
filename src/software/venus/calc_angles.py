@@ -1,7 +1,6 @@
 import numpy as np
 from numpy import hypot as hyp
-import matplotlib.pyplot as plt
-from settings import *
+from conf import *
 
 # numpy.linalg.solve
 # numpy.solve
@@ -82,6 +81,8 @@ def map_to_wall(coordinate, size, can_number):
 
 
 if __name__ == "__main__":
+	import matplotlib.pyplot as plt
+
 	## For vector plot
 	x_axis = np.linspace(bx, W - bx, 40)
 	y_axis = np.linspace(by, H - by, 40)

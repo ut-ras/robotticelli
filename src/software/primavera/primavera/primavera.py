@@ -10,7 +10,7 @@ from .modules.colors import detect_colors
 def primavera(image, colors, dither, palette_size=5, save_image='out.png', save_labels='lout.png',
               resize=1, overshoot=1, merge=True, quick=False, entire=False):
 
-    img  = sp.misc.imread(image)
+    img  = sp.misc.imread(image)[:,:,:3]
 
     if img is None:
         raise ValueError("Invalid image file/format")
@@ -38,7 +38,7 @@ def primavera(image, colors, dither, palette_size=5, save_image='out.png', save_
         np.save(save_labels, labels)
 
     if save_image:
-        sp.misc.insave(save_image, image)
+        sp.misc.imsave(save_image, image)
 
     return labels
 

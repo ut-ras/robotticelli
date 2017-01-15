@@ -1,6 +1,4 @@
-from __future__ import print_function
-
-import numpy as np 
+import numpy as np
 import time
 
 from scipy.spatial.distance import cdist
@@ -16,8 +14,6 @@ from scipy.spatial.distance import cdist
 ## +++INDIVIDUAL POINTS
 
 ## COLORS CONTAINS A HEADER WITH THE LABEL NUMBER
-
-
 
 def find_nearest_neighbor(coordinate, coordinate_list):
 	neighbor_distances = cdist([coordinate], coordinate_list)
@@ -102,4 +98,3 @@ if __name__ == "__main__":
 	]
 
 	print(solve_rounds(np.array(sample), 10))
-
