@@ -3,9 +3,8 @@ import argparse
 import numpy as np
 import collections
 
-import rounds as round_solver
-
-from calc_angles import map_to_wall
+from .rounds import solve_rounds
+from .calc_angles import map_to_wall
 
 def main():
 	parser = argparse.ArgumentParser('venus')
@@ -19,10 +18,11 @@ def main():
 	venus(args.labels, args.slots, args.pixels, args.write)
 
 ## Rows with -1s everwhere that isn't the first spot indicate a COLOR change
-def venus(labels, slots, pixels, write):
-	labels = np.load(labels)
+def venus(labels, write, slots=4, pixels=100):
+	if type(labels) == "String":
+		labels = np.load(labels)
 
-	rounds = round_solver.solve_rounds(labels, pixels)
+	rounds = solve_rounds(labels, pixels)
 	output = open(write, "w")
 
 	## CREATING INSTRUCTIONS

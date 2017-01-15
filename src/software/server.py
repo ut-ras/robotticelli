@@ -7,6 +7,7 @@ from base64 import b64encode
 import os
 
 from .primavera.primavera.primavera import primavera
+from .venus.venus import venus
 
 app = Flask(__name__)
 
@@ -51,6 +52,8 @@ def queue_run():
                                  merge=merge, dither=dither, entire=entire,
 				                 save_labels='out')
 
+    venus(labels=primavera_output, write="hardware/robot/draw.tsv")
+    print("Robot hardware image updated")
 
     ## Saving image produced by primavera
     with open("out.png", "rb") as output_image:
