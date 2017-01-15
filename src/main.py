@@ -1,10 +1,12 @@
 import conf
 
-def robotticelli:
+def robotticelli():
     if conf.MODE == None:
         raise ValueError('Check conf.py to configure settings')
 
-    ##TODO: add code to execute Venus and Magi
+    if conf.MODE == "PRE":
+        import software.server
+        app.run(port=5000,host='0.0.0.0')
 
 if __name__ == "main":
     robotticelli()
