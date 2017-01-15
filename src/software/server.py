@@ -15,10 +15,10 @@ def home():
     return render_template("index.html");
 
 
-palette_locations = {'RGB': 'primavera/primavera/palettes/rgb.json',
-                     'BW': 'primavera/primavera/palettes/bw.json',
-                     'CMYK': 'primavera/primavera/palettes/cmyk.json',
-                     'Montana': 'primavera/primavera/palettes/montana.json'}
+palette_locations = {'RGB': 'software/primavera/primavera/palettes/rgb.json',
+                     'BW': 'software/primavera/primavera/palettes/bw.json',
+                     'CMYK': 'software/primavera/primavera/palettes/cmyk.json',
+                     'Montana': 'software/primavera/primavera/palettes/montana.json'}
 
 @app.route("/submit",methods=["POST"])
 def queue_run():
@@ -27,6 +27,7 @@ def queue_run():
         print("document malformed")
         return "needed submit image"
 
+    ## Querying various requests for primavera
     image = request.files['image']
     palette = palette_locations[request.form['palette']]
     entire = False
@@ -36,18 +37,22 @@ def queue_run():
     merge = None
 
     if dither == 'None': dither = None
-    if palette != 'primavera/palettes/montana.json': entire = True
+    if palette != 'software/primavera/palettes/montana.json': entire = True
     if 'merge' in request.form: merge = request.form['merge']
 
+    ## Saving the image so that it can be used by primavera
     save_name = str(time())
-    file_path = 'primavera/process_queue/'+save_name+'.jpg'
+    file_path = 'software/primavera/process_queue/'+save_name+'.jpg'
     image.save(file_path)
 
+    ## Calling primavera
     primavera_output = primavera(image=file_path, colors=palette,
                                  palette_size=numcolors, overshoot=overshoot,
                                  merge=merge, dither=dither, entire=entire,
 				                 save_labels='out')
 
+
+    ## Saving image produced by primavera
     with open("out.png", "rb") as output_image:
         img_data = output_image.read()
         data_uri_header = "data:image/png;base64,"
