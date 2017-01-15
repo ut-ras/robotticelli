@@ -1,4 +1,5 @@
 import numpy as np
 
-img_commands = np.genfromtxt('art.tsv', delimiter='\t')
-print img_commands
+def main():
+    img_commands = np.genfromtxt('hardware/robot/image.tsv', delimiter='\t')
+    print(img_commands)
