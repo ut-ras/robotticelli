@@ -1,5 +1,8 @@
 import httplib
 
+## Motor functions for communicating with the master RPi.
+## Filled with functions to wrap HTTP request code.
+
 def send_ready(from_ip, to_ip):
     '''
         This will let the main RPi module know
