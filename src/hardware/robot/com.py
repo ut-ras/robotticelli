@@ -1,6 +1,9 @@
 import httplib
 import urllib
 
+##Module for communicating to the slaves.
+##Wraps long HTTPRequests
+
 def send_turn_ratio(from_ip, to_ip, ratio):
     '''
         This will let the main RPi module know
