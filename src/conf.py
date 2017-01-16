@@ -3,8 +3,8 @@ LMOTOR_IP = '0.0.0.0'
 RMOTOR_IP = '0.0.0.0'
 ROBOT_IP  = '0.0.0.0'
 
-#String "LMOTOR", "RMOTOR", "ROBOT", or "PRE"
-MODE = "PRE"
+#String "LMOTOR", "RMOTOR", "ROBOT", or "SETUP"
+MODE = None
 
 # Wall parameters
 H  = 10   #Wall Height in m

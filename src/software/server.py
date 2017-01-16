@@ -52,7 +52,7 @@ def queue_run():
                                  merge=merge, dither=dither, entire=entire,
 				                 save_labels='out')
 
-    venus(labels=primavera_output, write="hardware/robot/draw.tsv")
+    venus(labels=primavera_output, write="hardware/robot/image.tsv")
     print("Robot hardware image updated")
 
     ## Saving image produced by primavera
