@@ -1,5 +1,5 @@
-from .motor import Motor_PWM
-from .conf import MAX_ENCODER_STEPS
+from hardware.motor.motor import Motor_PWM
+from hardware.motor.conf import MAX_ENCODER_STEPS
 
 encoder_total_steps = 0
 

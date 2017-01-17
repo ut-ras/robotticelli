@@ -1,7 +1,7 @@
 from flask import Flask
 from flask import request
-from .conf import MAX_ENCODER_STEPS
-import .pwm
+from hardware.motor.conf import MAX_ENCODER_STEPS
+import hardware.motor.pwm
 
 
 app = Flask(__name__)
