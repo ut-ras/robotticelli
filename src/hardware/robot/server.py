@@ -6,7 +6,7 @@ from hardware.robot.step import request_step
 
 app = Flask(__name__)
 
-@app.route("/status", method=['POST'])
+@app.route("/status", methods=['POST'])
 def run_step_when_ready():
     ## Request step will tell the robot to move to
     ## to its next location when both motors request the step.
