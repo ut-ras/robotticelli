@@ -6,7 +6,7 @@ encoder_total_steps = 0
 
 ## create a DC motor PWM output on pins 0, 1
 ## 0 controls forwards, 1 controls backwards
-motor = Motor_PWM(0,1)
+motor = Motor_PWM(pi, 12, 13)
 
 def run(encoder_steps):
     direction = 0
@@ -16,8 +16,8 @@ def run(encoder_steps):
     while encoder_total_steps < encoder_steps:
         encoder_total_steps = encoder.readSteps()
 
-    #TODO: change this algorithm to work with kalman filter and PID  
+    #TODO: change this algorithm to work with kalman filter and PID
     #Motionless
     motor.changeSpeed(90)
-    #Reset for next run 
-    encoder.resetSteps() 
+    #Reset for next run
+    encoder.resetSteps()
