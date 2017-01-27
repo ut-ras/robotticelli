@@ -12,7 +12,7 @@ class Motor_PWM:
     backward = None
     pi = None
 
-    def __init__(self, pi, fwd, back, rate=100000):
+    def __init__(self, fwd, back, rate=100000):
         '''
             Starts PWM on the fwd pin and
             back pin, with a rate of [rate]
@@ -26,25 +26,25 @@ class Motor_PWM:
         ## they can be used by other functions
         self.forward  = fwd
         self.backward = back
-        self.pi = pi
+        self.pi = pigpio.pi()	
 
         ## Turn fwd and back into output pins
-        pi.set_mode(fwd, gpio.OUTPUT)
-        pi.set_mode(back, gpio.OUTPUT)
+        self.pi.set_mode(fwd, pigpio.OUTPUT)
+        self.pi.set_mode(back, pigpio.OUTPUT)
 
         ## Initializing pins to operate at [rate] frequency
-        pi.set_PWM_frequency(fwd, rate)
-        pi.set_PWM_frequency(back, rate)
+        self.pi.set_PWM_frequency(fwd, rate)
+        self.pi.set_PWM_frequency(back, rate)
 
         ## Initializing the motor to the equivalent of no speed
-        pi.set_PWM_dutycycle(fwd, 0)
-        pi.set_PWM_dutycycle(back, 0)
+        self.pi.set_PWM_dutycycle(fwd, 0)
+        self.pi.set_PWM_dutycycle(back, 0)
 
         ## Change scale of speed from 0-512 to 0-180
-        pi.set_PWM_range(fwd, 90)
-        pi.set_PWM_range(back, 90)
+        self.pi.set_PWM_range(fwd, 90)
+        self.pi.set_PWM_range(back, 90)
 
-    def changeSpeed(speed):
+    def changeSpeed(self, speed):
         '''
             Changes the speed of a motor. [speed] is a
             float between 0 and 510, with 0 representing
@@ -59,9 +59,9 @@ class Motor_PWM:
         backward_duty_cycle = max(0, 90 - speed)
 
         ## Adjusting PWM to match calculated duty cycles
-        self.pi.set_PWM_dutycycle(fwd, forward_duty_cycle)
-        self.pi.set_PWM_dutycycle(back, backward_duty_cycle)
+        self.pi.set_PWM_dutycycle(self.forward, forward_duty_cycle)
+        self.pi.set_PWM_dutycycle(self.backward, backward_duty_cycle)
 
-    def stop():
+    def stop(self):
         '''Stops PWM at the pins but leaves the daemon running'''
         this.changeSpeed(0);

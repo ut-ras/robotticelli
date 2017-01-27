@@ -8,7 +8,7 @@ encoder_total_steps = 0
 
 ## create a DC motor PWM output on pins 0, 1
 ## 0 controls forwards, 1 controls backwards
-motor = Motor_PWM(pigpio.pi(), 12, 13)
+motor = Motor_PWM(12, 13)
 
 def run(pi, encoder_steps):
     direction = 0

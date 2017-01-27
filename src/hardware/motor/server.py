@@ -6,7 +6,7 @@ import hardware.motor.pwm
 
 app = Flask(__name__)
 
-@app.route("/", method=['POST'])
+@app.route("/", methods=['POST'])
 def run_step():
     ## The encoder will measure how much line has been pulled in,
     ## once it has stepped [encoder_steps] time, the program will
