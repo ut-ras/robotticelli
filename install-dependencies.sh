@@ -10,5 +10,6 @@ if [ ! -d ./modules ]; then
 	mkdir ./modules
 fi
 
+cd ./modules
 git clone https://www.github.com/guyc/py-gaugette.git
 
