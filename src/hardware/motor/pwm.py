@@ -1,3 +1,5 @@
+import pigpio
+
 from hardware.motor.motor import Motor_PWM
 from hardware.motor.conf import MAX_ENCODER_STEPS
 from hardware.motor.encoder import Encoder
@@ -6,9 +8,9 @@ encoder_total_steps = 0
 
 ## create a DC motor PWM output on pins 0, 1
 ## 0 controls forwards, 1 controls backwards
-motor = Motor_PWM(pi, 12, 13)
+motor = Motor_PWM(pigpio.pi(), 12, 13)
 
-def run(encoder_steps):
+def run(pi, encoder_steps):
     direction = 0
     encoder_total_steps = 0
 
