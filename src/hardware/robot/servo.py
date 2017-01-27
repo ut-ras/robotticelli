@@ -1,4 +1,4 @@
-import RPIO.GPIO as GPIO
+import RPIO as GPIO
 
 class Servo_PWM:
     '''

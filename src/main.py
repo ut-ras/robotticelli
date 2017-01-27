@@ -1,4 +1,5 @@
 import conf
+import re
 
 if conf.MODE == None:
     raise ValueError('Check conf.py to configure settings')
@@ -12,13 +13,9 @@ elif conf.MODE == "ROBOT":
     from hardware.robot.main import main
     main()
 
-elif conf.MODE == "LMOTOR":
+elif re.search(r"MOTOR",conf.MODE):
     from hardware.motor.main import main
-    main("left")
-
-elif conf.MODE == "RMOTOR":
-    from hardware.motor.main import main
-    main("right")
+    main()
 
 else:
     raise ValueError('Please check conf mode for typos')
