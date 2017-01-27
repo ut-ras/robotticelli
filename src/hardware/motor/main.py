@@ -1,6 +1,6 @@
 from hardware.motor.server import *
 from hardware.motor.motor import *
-import RPIO.GPIO
+import RPi.GPIO
 
 
 ## Initialize motors, testing
