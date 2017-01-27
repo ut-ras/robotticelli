@@ -1,4 +1,4 @@
-import RPi.GPIO as GPIO
+import pigpio as gpio
 
 class Motor_PWM:
     '''
@@ -7,52 +7,56 @@ class Motor_PWM:
         Meant to be interfaced with a motor controller
     '''
 
+    ## Pin numbers for the two IO pins in use
     forward = None
     backward = None
 
-    def __init__(self, fwd, back, rate=50):
+    def __init__(self, fwd, back, rate=100000):
         '''
             Starts PWM on the fwd pin and
             back pin, with a rate of [rate]
             hertz. Initializes to 0 duty cycle
         '''
 
-        ## Initializing fwd and back pins
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(fwd, GPIO.OUT)
-
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(back, GPIO.OUT)
-
         ## Exporting them to class variables so that
         ## they can be used by other functions
-        self.forward  = GPIO.PWM(fwd, rate)
-        self.backward = GPIO.PWM(back, rate)
+        self.forward  = fwd
+        self.backward = back
 
-        self.forward.begin(10)
-        self.backward.begin(10)
+        ## Turn fwd and back into output pins
+        gpio.set_mode(fwd, gpio.OUTPUT)
+        gpio.set_mode(back, gpio.OUTPUT)
+
+        ## Initializing pins to operate at [rate] frequency
+        gpio.set_PWM_frequency(fwd, rate)
+        gpio.set_PWM_frequency(back, rate)
+
+        ## Initializing the motor to the equivalent of no speed
+        gpio.set_PWM_dutycycle(fwd, 0)
+        gpio.set_PWM_dutycycle(back, 0)
+
+        ## Change scale of speed from 0-512 to 0-180
+        gpio.set_PWM_range(fwd, 90)
+        gpio.set_PWM_range(back, 90)
 
     def changeSpeed(speed):
         '''
             Changes the speed of a motor. [speed] is a
-            float between 0 and 180, with 0 representing
-            fully backwards, and 180 representing fully
+            float between 0 and 510, with 0 representing
+            fully backwards, and 510 representing fully
             forwards
         '''
         if speed < 0 or speed > 180:
-            raise ValueError('Speed must be between 0 and 180 inclusive')
+            raise ValueError('Speed must be between 0 and 510 inclusive')
 
-        ## There is some overlap between the two PWM channels
-        forward_duty_cycle  = max(0, speed - 80)
-        backward_duty_cycle = max(0, 100 - speed)
+        ## Deducing PWM duty cycles from speed given
+        forward_duty_cycle  = max(0, speed - 90)
+        backward_duty_cycle = max(0, 90 - speed)
 
-        self.forward.ChangeDutyCycle(forward_duty_cycle)
-        self.backward.ChangeDutyCycle(backward_duty_cycle)
+        ## Adjusting PWM to match calculated duty cycles
+        gpio.set_PWM_dutycycle(fwd, forward_duty_cycle)
+        gpio.set_PWM_dutycycle(back, backward_duty_cycle)
 
     def stop():
-        self.forward.stop()
-        self.backward.stop()
-
-    def start():
-        self.forward.start(10)
-        self.backward.start(10)
+        '''Stops PWM at the pins but leaves the daemon running'''
+        this.changeSpeed(0);
