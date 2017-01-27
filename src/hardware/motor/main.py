@@ -5,5 +5,5 @@ from hardware.motor.motor import Motor_PWM
 motor = Motor_PWM(12, 13)
 motor.changeSpeed(100)
 
-def main(motor_id):
+def main():
     app.run(host='0.0.0.0')
