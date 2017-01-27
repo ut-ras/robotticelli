@@ -12,5 +12,13 @@ elif conf.MODE == "ROBOT":
     from hardware.robot.main import main
     main()
 
+elif conf.MODE == "LMOTOR":
+    from hardware.motor.main import main
+    main("left")
+
+elif conf.MODE == "RMOTOR":
+    from hardware.motor.main import main
+    main("right")
+
 else:
     raise ValueError('Please check conf mode for typos')

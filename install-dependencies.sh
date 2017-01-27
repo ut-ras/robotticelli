@@ -1,8 +1,14 @@
-sudo apt-get install python
-sudo apt-get install python-pip
-sudo apt-get install python-numpy
-sudo apt-get install python-scipy
-sudo apt-get install python-sklearn
-sudo pip install flask
-sudo pip install RPIO
+apt-get install python
+apt-get install python-pip
+apt-get install python-numpy
+apt-get install python-scipy
+apt-get install python-sklearn
+pip install flask
+pip install RPIO
+
+if [ ! -d ./modules ]; then
+	mkdir ./modules
+fi
+
+git clone https://www.github.com/guyc/py-gaugette.git
 
