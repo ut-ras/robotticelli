@@ -1,7 +1,9 @@
 import pigpio
 
+from conf import MAX_ENCODER_STEPS
+from conf import ROBOT_IP
+
 from hardware.motor.motor import Motor_PWM
-from hardware.motor.conf import MAX_ENCODER_STEPS
 from hardware.motor.encoder import Encoder
 from hardware.motor.com import send_ready
 
@@ -24,4 +26,4 @@ def run(pi, encoder_steps):
     motor.changeSpeed(90)
     #Reset for next run
     encoder.resetSteps()
-    send_ready()
+    send_ready(conf.ROBOT_IP)

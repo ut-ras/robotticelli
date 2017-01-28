@@ -4,4 +4,4 @@ cd src
 pigpiod &
 
 # Execute the entry point script
-python main.py
+python2 main.py
