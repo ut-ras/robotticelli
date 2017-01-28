@@ -12,8 +12,10 @@ def run_step():
     ## The encoder will measure how much line has been pulled in,
     ## once it has stepped [encoder_steps] time, the program will
     ## message the robot RPi that this motor is ready for instructions
+    print(request.form)
     encoder_steps = MAX_ENCODER_STEPS * request.form.turn_ratio
-    pwm.run(encoder_steps)
+
+    #pwm.run(encoder_steps)
 
     return jsonify({"response": "Hello!"})
 

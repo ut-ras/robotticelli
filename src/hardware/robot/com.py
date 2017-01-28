@@ -1,6 +1,7 @@
 import httplib
 import urllib
 import conf
+import requests
 
 ##Module for communicating to the slaves.
 ##Wraps long HTTPRequests
@@ -11,13 +12,10 @@ def send_turn_ratio(to_ip, ratio):
         that it is ready for the next motor
         instruction.
     '''
-    status  = urllib.urlencode({'from': conf.IP[conf.MODE], 'turn_ratio': ratio})
-    conn = httplib.HTTPConnection(to_ip, port=5000);
-    conn.request("POST", "/", status)
-    content = conn.getresponse()
-    print(content.reason, content.status)
-    print(content.read())
-    conn.close()
+    headers = {"Content-type": "application/json"}
+    status = {'from': conf.IP[conf.MODE], 'turn_ratio': ratio}
+    response = requests.post("http://{0}:5000/".format(to_ip), data=status)
+    print(response)
 
 def test_connection(to_ip):
     try:

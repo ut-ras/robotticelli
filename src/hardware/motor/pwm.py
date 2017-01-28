@@ -14,18 +14,18 @@ encoder_total_steps = 0
 #  motor = Motor_PWM(12, 13)
 
 def run(pi, needed_encoder_steps):
-    # global motor
-    #
-    # direction = 0
-    # encoder_total_steps = 0
-    # motor.changeSpeed(90 * (1 +  needed_encoder_steps/MAX_ENCODER_STEPS))
-    #
-    # while encoder_total_steps < needed_encoder_steps:
-    #     encoder_total_steps = encoder.readSteps()
-    #
-    # #TODO: change this algorithm to work with kalman filter and PID
-    # #Motionless
-    # motor.changeSpeed(90)
-    # #Reset for next run
-    # encoder.resetSteps()
+    global motor
+
+    direction = 0
+    encoder_total_steps = 0
+    motor.changeSpeed(90 * (1 +  needed_encoder_steps/MAX_ENCODER_STEPS))
+
+    while encoder_total_steps < needed_encoder_steps:
+        encoder_total_steps = encoder.readSteps()
+
+    #TODO: change this algorithm to work with kalman filter and PID
+    #Motionless
+    motor.changeSpeed(90)
+    #Reset for next run
+    encoder.resetSteps()
     send_ready(conf.ROBOT_IP)
