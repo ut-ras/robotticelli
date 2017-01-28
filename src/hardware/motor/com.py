@@ -17,7 +17,7 @@ elif conf.MODE == "RMOTOR":
 ## Motor functions for communicating with the master RPi.
 ## Filled with functions to wrap HTTP request code.
 
-def send_ready(from_ip, to_ip):
+def send_ready(to_ip):
     '''
         This will let the main RPi module know
         that it is ready for the next motor
