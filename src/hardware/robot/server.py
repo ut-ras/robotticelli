@@ -14,7 +14,7 @@ def run_step_when_ready():
     return request_step(request.form.motor_id)
 
 @app.route("/test", methods=['POST'])
-def run_step_when_ready():
+def test():
     print("Received request from MOTOR")
     return {response: "Hello!"}
 

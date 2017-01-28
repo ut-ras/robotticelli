@@ -1,4 +1,4 @@
-from __future__ import absolute_import 
+from __future__ import absolute_import
 import httplib
 import urllib
 import conf
@@ -34,7 +34,7 @@ def send_ready(from_ip, to_ip):
     print(content.read())
     conn.close()
 
-def test_connection(to_ip):
+def test_connection(from_ip, to_ip):
     '''
         This is to test the connection with the RPI center
         module
@@ -42,7 +42,7 @@ def test_connection(to_ip):
     status  = urllib.urlencode({'from': from_ip})
     conn = httplib.HTTPConnection(to_ip, port=5000);
     conn.request("POST", "/test", status)
-    resp = conn.getresponse()
+    content = conn.getresponse()
     print(content.reason, content.status)
     print(content.read())
     conn.close()
