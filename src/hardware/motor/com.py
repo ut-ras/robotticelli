@@ -22,7 +22,7 @@ def send_ready(from_ip, to_ip):
         instruction.
     '''
     status  = urllib.urlencode({
-        'from': conf.IP[conf.MODE]
+        'from': conf.IP[conf.MODE],
         'status': 'ready',
         'motor_id': motor_id
     })
