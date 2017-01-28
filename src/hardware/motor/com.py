@@ -29,9 +29,8 @@ def send_ready(from_ip, to_ip):
         'motor_id': motor_id
     }
 
-    response = requests("http:{0}:5000/status".format(to_ip), data=status)
+    response = requests("http://{0}:5000/status".format(to_ip), data=status)
     print(response, response.text)
-    conn.close()
 
 def test_connection(to_ip):
     try:

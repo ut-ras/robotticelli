@@ -2,9 +2,8 @@ import pigpio
 
 from conf import MAX_ENCODER_STEPS
 from conf import ROBOT_IP
-
 from hardware.motor.motor import Motor_PWM
-from hardware.motor.encoder import Encoder
+#from hardware.motor.encoder import Encoder
 from hardware.motor.com import send_ready
 
 encoder_total_steps = 0
@@ -13,7 +12,7 @@ encoder_total_steps = 0
 ## 0 controls forwards, 1 controls backwards
 #  motor = Motor_PWM(12, 13)
 
-def run(pi, needed_encoder_steps):
+def run(needed_encoder_steps):
     # global motor
     #
     # direction = 0
@@ -28,4 +27,4 @@ def run(pi, needed_encoder_steps):
     # motor.changeSpeed(90)
     # #Reset for next run
     # encoder.resetSteps()
-    send_ready(conf.ROBOT_IP)
+    send_ready(ROBOT_IP)

@@ -1,4 +1,4 @@
-class Encoder():
+class Encoder:
     '''
         Class for reading from the encoders attached
         to the winch. Requires two general purpose IO
@@ -8,12 +8,12 @@ class Encoder():
     ## TODO: IMPLEMENT ACTUAL ENCODER LOGIC
     total_steps = None
     def __init__(self, pin1, pin2):
-        total_steps = 0
+        self.total_steps = 0
 
 
     def readSteps():
-        total_steps += 1
-        return total_steps
+        self.total_steps += 1
+        return self.total_steps
 
     def resetSteps():
-        total_steps = 0
+        self.total_steps = 0
