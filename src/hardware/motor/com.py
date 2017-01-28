@@ -5,7 +5,6 @@ import conf
 import requests
 
 motor_id = -1
-print(conf)
 
 if conf.MODE == "LMOTOR":
     motor_id = 0
@@ -17,19 +16,20 @@ elif conf.MODE == "RMOTOR":
 ## Motor functions for communicating with the master RPi.
 ## Filled with functions to wrap HTTP request code.
 
-def send_ready(to_ip):
+def send_ready():
     '''
         This will let the main RPi module know
         that it is ready for the next motor
         instruction.
     '''
+    print(conf)
     status = {
         'from': conf.IP[conf.MODE],
         'status': 'ready',
-        'motor_id': motor_id
+        'motor_id': conf.IP['ROBOT']
     }
-
-    response = requests("http://{0}:5000/status".format(to_ip), data=status)
+    print(status)
+    response = requests.post("http://{0}:5000/status".format(conf.IP['ROBOT']), data=status)
     print(response, response.text)
 
 def test_connection(to_ip):

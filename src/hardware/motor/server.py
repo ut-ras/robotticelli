@@ -2,7 +2,7 @@ from flask import Flask
 from flask import request
 from flask import jsonify
 from conf import MAX_ENCODER_STEPS
-import hardware.motor.pwm
+import hardware.motor.pwm as pwm
 
 
 app = Flask(__name__)
@@ -16,6 +16,7 @@ def run_step():
     form = dict(request.form)
     #Extracts the turn ratio from the form being sent
     encoder_steps = MAX_ENCODER_STEPS * float(form['turn_ratio'][0])
+    print(pwm)
     pwm.run(encoder_steps)
 
     return jsonify({"response": "Hello!"})
