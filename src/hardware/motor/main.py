@@ -5,5 +5,10 @@ from hardware.motor.motor import Motor_PWM
 motor = Motor_PWM(12, 13)
 motor.changeSpeed(100)
 
+
 def main():
+
+	if conf.ROBOT_IP != '0.0.0.0':
+		test_connection(conf.ROBOT_IP)
+    
     app.run(host='0.0.0.0')

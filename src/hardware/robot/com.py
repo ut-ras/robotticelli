@@ -17,3 +17,16 @@ def send_turn_ratio(from_ip, to_ip, ratio):
     print(content.reason, content.status)
     print(content.read())
     conn.close()
+
+def test_connection(to_ip):
+    '''
+        This is to test the connection
+        with the RPi motor modules
+    '''
+    status  = urllib.urlencode({'from': from_ip})
+    conn = httplib.HTTPConnection(to_ip, port=5000);
+    conn.request("POST", "/test", status)
+    resp = conn.getresponse()
+    print(content.reason, content.status)
+    print(content.read())
+    conn.close()

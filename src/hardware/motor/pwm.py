@@ -1,7 +1,7 @@
 import pigpio
 
+from conf import MAX_ENCODER_STEPS
 from hardware.motor.motor import Motor_PWM
-from hardware.motor.conf import MAX_ENCODER_STEPS
 from hardware.motor.encoder import Encoder
 from hardware.motor.com import send_ready
 

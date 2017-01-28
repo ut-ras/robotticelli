@@ -17,3 +17,7 @@ w  = .5   #Robot width in m
 
 bx = W * .1   #Buffer in meters between the edge of the wall and the edge of the mural
 by = H * .1
+
+
+# Motor step parameters
+MAX_ENCODER_STEPS = 100
