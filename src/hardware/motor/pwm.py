@@ -13,12 +13,12 @@ encoder_total_steps = 0
 ## 0 controls forwards, 1 controls backwards
 motor = Motor_PWM(12, 13)
 
-def run(pi, encoder_steps):
+def run(pi, needed_encoder_steps):
     direction = 0
     encoder_total_steps = 0
+    motor.changeSpeed(90 * (1 +  needed_encoder_steps/MAX_ENCODER_STEPS))
 
-    motor.changeSpeed(90 * (1 +  encoder_steps/MAX_ENCODER_STEPS))
-    while encoder_total_steps < encoder_steps:
+    while encoder_total_steps < needed_encoder_steps:
         encoder_total_steps = encoder.readSteps()
 
     #TODO: change this algorithm to work with kalman filter and PID

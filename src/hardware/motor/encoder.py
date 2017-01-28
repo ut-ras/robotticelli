@@ -5,11 +5,15 @@ class Encoder():
         pins to be used on the Raspberry Pi
     '''
 
+    ## TODO: IMPLEMENT ACTUAL ENCODER LOGIC
+    total_steps = None
     def __init__(self, pin1, pin2):
-        pass
+        total_steps = 0
+
 
     def readSteps():
-        pass
+        total_steps += 1
+        return total_steps
 
     def resetSteps():
-        pass
+        total_steps = 0

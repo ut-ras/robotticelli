@@ -1,5 +1,5 @@
 #IP Destinations for robot components
-LMOTOR_IP = '10.156.2.107'
+LMOTOR_IP = '10.156.2.190'
 RMOTOR_IP  = '0.0.0.0'
 ROBOT_IP = '10.156.0.221'
 

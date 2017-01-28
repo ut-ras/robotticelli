@@ -1,4 +1,5 @@
 import conf
+import os
 
 os.system("pigpiod")
 

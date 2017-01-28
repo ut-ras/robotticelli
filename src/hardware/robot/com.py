@@ -14,7 +14,7 @@ def send_turn_ratio(to_ip, ratio):
     status  = urllib.urlencode({'from': conf.IP[conf.MODE], 'turn_ratio': ratio})
     conn = httplib.HTTPConnection(to_ip, port=5000);
     conn.request("POST", "/", status)
-    resp = conn.getresponse()
+    content = conn.getresponse()
     print(content.reason, content.status)
     print(content.read())
     conn.close()
