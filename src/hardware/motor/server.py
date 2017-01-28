@@ -17,5 +17,10 @@ def run_step():
 
     return True
 
+@app.route("/test", methods=['POST'])
+def run_step_when_ready():
+    print("Received request from MOTOR")
+    return {response: "Hello!"}
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0')

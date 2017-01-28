@@ -13,5 +13,10 @@ def run_step_when_ready():
     ## (i.e. they are ready)
     return request_step(request.form.motor_id)
 
+@app.route("/test", methods=['POST'])
+def run_step_when_ready():
+    print("Received request from MOTOR")
+    return {response: "Hello!"}
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
