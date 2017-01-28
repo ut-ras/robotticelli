@@ -22,11 +22,11 @@ def send_ready():
         that it is ready for the next motor
         instruction.
     '''
-    print(conf)
+    global motor_id
     status = {
         'from': conf.IP[conf.MODE],
         'status': 'ready',
-        'motor_id': conf.IP['ROBOT']
+        'motor_id': motor_id
     }
     print(status)
     response = requests.post("http://{0}:5000/status".format(conf.IP['ROBOT']), data=status)
