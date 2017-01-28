@@ -1,12 +1,16 @@
+from __future__ import absolute_import 
 import httplib
 import urllib
 import conf
 
-motor_id = 0
+motor_id = -1
+print(conf)
+
 if conf.MODE == "LMOTOR":
+    motor_id = 0
+elif conf.MODE == "RMOTOR":
     motor_id = 1
-else conf.MODE == "RMOTOR":
-    motor_id = 2
+
 
 ## Motor functions for communicating with the master RPi.
 ## Filled with functions to wrap HTTP request code.
@@ -19,7 +23,7 @@ def send_ready(from_ip, to_ip):
     '''
     status  = urllib.urlencode({
         'from': from_ip,
-        'status': 'ready'
+        'status': 'ready',
         'motor_id': motor_id
     })
 

@@ -47,12 +47,12 @@ class Motor_PWM:
     def changeSpeed(self, speed):
         '''
             Changes the speed of a motor. [speed] is a
-            float between 0 and 510, with 0 representing
-            fully backwards, and 510 representing fully
+            float between 0 and 180, with 0 representing
+            fully backwards, and 180 representing fully
             forwards
         '''
-        if speed < 0 or speed > 180:
-            raise ValueError('Speed must be between 0 and 510 inclusive')
+        if speed < 0 or speed >180:
+            raise ValueError('Speed must be between 0 and 180 inclusive')
 
         ## Deducing PWM duty cycles from speed given
         forward_duty_cycle  = max(0, speed - 90)
@@ -64,4 +64,4 @@ class Motor_PWM:
 
     def stop(self):
         '''Stops PWM at the pins but leaves the daemon running'''
-        this.changeSpeed(0);
+        this.changeSpeed(90);
