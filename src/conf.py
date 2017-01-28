@@ -1,6 +1,6 @@
 #IP Destinations for robot components
 LMOTOR_IP = '10.156.2.107'
-RMOTOR   = '0.0.0.0'
+RMOTOR_IP  = '0.0.0.0'
 ROBOT_IP = '10.156.0.221'
 
 #String "LMOTOR", "RMOTOR", "ROBOT", or "SETUP"
@@ -18,6 +18,12 @@ w  = .5   #Robot width in m
 bx = W * .1   #Buffer in meters between the edge of the wall and the edge of the mural
 by = H * .1
 
-
 # Motor step parameters
 MAX_ENCODER_STEPS = 100
+
+## DO NOT TOUCH
+IP = {
+    'LMOTOR': LMOTOR_IP,
+    'RMOTOR': RMOTOR_IP,
+    'ROBOT': ROBOT_IP
+}
