@@ -13,7 +13,6 @@ def run_step_when_ready():
     ## to its next location when both motors request the step.
     ## (i.e. they are ready)
     form = dict(request.form)
-    print(form)
     request_step(form['motor_id'][0])
     return jsonify({"response": "Success!"})
 

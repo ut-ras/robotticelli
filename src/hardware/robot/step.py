@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+from time import sleep
 import numpy as np
 
 import conf
@@ -56,11 +57,14 @@ def request_step(motor_id):
     global last_instruction_index
     global last_instruction
 
+    print(motor_id)
     if motor_id < len(motors_requested):
         motors_requested[motor_id] = True
 
     if check_all_requested() and position_is_close_enough_to_goal():
+        print("pass" + str(current_instruction_index))
         gen_next_instruction()
+        print("pass")
 
         from_x, from_y = last_instruction[1], last_instruction[2]
         goal_x, goal_y = current_instruction[1], current_instruction[2]

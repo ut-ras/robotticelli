@@ -9,6 +9,7 @@ apt-get install pigpio
 apt-get install python-pigpio
 
 pip install flask
+pip install grequests
 
 if [ ! -d ./modules ]; then
 	mkdir ./modules

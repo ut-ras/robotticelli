@@ -2,6 +2,9 @@ import httplib
 import urllib
 import conf
 import requests
+import grequests
+import os
+from time import sleep
 
 ##Module for communicating to the slaves.
 ##Wraps long HTTPRequests
@@ -14,8 +17,8 @@ def send_turn_ratio(to_ip, ratio):
     '''
     headers = {"Content-type": "application/json"}
     status = {'from': conf.IP[conf.MODE], 'turn_ratio': ratio}
-    response = requests.post("http://{0}:5000/".format(to_ip), data=status)
-    print(response, response.text)
+    requests.post("http://{0}:5000/".format(to_ip), data=status)
+    print("sent")
 
 def test_connection(to_ip):
     try:
