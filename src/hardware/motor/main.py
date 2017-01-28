@@ -1,3 +1,6 @@
+import conf
+
+from hardware.motor.com import test_connection
 from hardware.motor.server import *
 from hardware.motor.motor import Motor_PWM
 
@@ -11,4 +14,4 @@ def main():
 	if conf.ROBOT_IP != '0.0.0.0':
 		test_connection(conf.ROBOT_IP)
     
-    app.run(host='0.0.0.0')
+	app.run(host='0.0.0.0')
