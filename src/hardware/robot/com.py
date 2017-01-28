@@ -29,8 +29,8 @@ def test_connection(to_ip):
         conn = httplib.HTTPConnection(to_ip, port=5000);
         conn.request("POST", "/test", status)
         content = conn.getresponse()
-        print(content.reason, content.status)
-        print(content.read())
         conn.close()
+        return True
     except:
-        print("It looks like " + to_ip + " isn't online!")
+        return False
+        print("not reached")

@@ -1,5 +1,7 @@
 import conf
 
+os.system("pigpiod")
+
 from hardware.motor.com import test_connection
 from hardware.motor.server import *
 from hardware.motor.motor import Motor_PWM
@@ -10,7 +12,6 @@ motor.changeSpeed(00)
 
 
 def main():
-
 	if conf.ROBOT_IP != '0.0.0.0':
 		test_connection(conf.ROBOT_IP)
 

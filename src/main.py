@@ -1,6 +1,8 @@
 import conf
 import re
 
+## TODO: Have motors communicate their own IP address
+
 if conf.MODE == None:
     raise ValueError('Check conf.py to configure settings')
 
