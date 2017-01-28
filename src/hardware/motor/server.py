@@ -15,12 +15,12 @@ def run_step():
     encoder_steps = MAX_ENCODER_STEPS * request.form.turn_ratio
     pwm.run(encoder_steps)
 
-    return True
+    return jsonify({"response": "Hello!"})
 
 @app.route("/test", methods=['POST'])
 def test():
     print("Received request from MOTOR")
-    return jsonify({response: "Hello!"})
+    return jsonify({"response": "Hello!"})
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
