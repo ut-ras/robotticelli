@@ -14,6 +14,8 @@ encoder_total_steps = 0
 motor = Motor_PWM(12, 13)
 
 def run(pi, needed_encoder_steps):
+    global motor
+    
     direction = 0
     encoder_total_steps = 0
     motor.changeSpeed(90 * (1 +  needed_encoder_steps/MAX_ENCODER_STEPS))
