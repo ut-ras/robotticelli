@@ -1,5 +1,6 @@
 from flask import Flask
 from flask import request
+from flask import jsonify
 from conf import MAX_ENCODER_STEPS
 import hardware.motor.pwm
 
@@ -19,7 +20,7 @@ def run_step():
 @app.route("/test", methods=['POST'])
 def test():
     print("Received request from MOTOR")
-    return {response: "Hello!"}
+    return jsonify({response: "Hello!"})
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
