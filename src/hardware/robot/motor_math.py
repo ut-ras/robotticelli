@@ -24,6 +24,7 @@ def get_motor_spin_ratio(x, y, vec):
 	Negative is out, positive is in
 	'''
 	res = xytransform(x, y, vec)
+	## this normalizes the result for the biggest number.
 	return res/(max(abs(res[0]), abs(res[1])) or 1)
 
 def main():

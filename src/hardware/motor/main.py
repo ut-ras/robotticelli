@@ -1,4 +1,5 @@
 import conf
+import os
 
 from hardware.motor.com import test_connection
 from hardware.motor.server import *
@@ -10,7 +11,6 @@ motor.changeSpeed(00)
 
 
 def main():
-
 	if conf.ROBOT_IP != '0.0.0.0':
 		test_connection(conf.ROBOT_IP)
 

@@ -1,5 +1,8 @@
 import conf
 import re
+import os
+
+## TODO: Have motors communicate their own IP address
 
 if conf.MODE == None:
     raise ValueError('Check conf.py to configure settings')
@@ -10,10 +13,13 @@ elif conf.MODE == "SETUP":
     app.run(port=5000,host='0.0.0.0')
 
 elif conf.MODE == "ROBOT":
+    #os.system("redis-server")
+    #os.system("celery -A hardware.robot.server.celery worker")
     from hardware.robot.main import main
     main()
 
 elif re.search(r"MOTOR",conf.MODE):
+    os.system("pigpiod")
     from hardware.motor.main import main
     main()
 

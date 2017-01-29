@@ -1,6 +1,8 @@
 import httplib
 import urllib
 import conf
+import requests
+import os
 
 ##Module for communicating to the slaves.
 ##Wraps long HTTPRequests
@@ -11,13 +13,10 @@ def send_turn_ratio(to_ip, ratio):
         that it is ready for the next motor
         instruction.
     '''
-    status  = urllib.urlencode({'from': conf.IP[conf.MODE], 'turn_ratio': ratio})
-    conn = httplib.HTTPConnection(to_ip, port=5000);
-    conn.request("POST", "/", status)
-    resp = conn.getresponse()
-    print(content.reason, content.status)
-    print(content.read())
-    conn.close()
+    headers = {"Content-type": "application/json"}
+    status = {'from': conf.IP[conf.MODE], 'turn_ratio': ratio}
+    requests.post("http://{0}:5000/".format(to_ip), data=status)
+    print("INSTRUCTION received by MOTOR at " + to_ip)
 
 def test_connection(to_ip):
     try:
@@ -29,8 +28,8 @@ def test_connection(to_ip):
         conn = httplib.HTTPConnection(to_ip, port=5000);
         conn.request("POST", "/test", status)
         content = conn.getresponse()
-        print(content.reason, content.status)
-        print(content.read())
         conn.close()
+        return True
     except:
-        print("It looks like " + to_ip + " isn't online!")
+        return False
+        print("not reached")

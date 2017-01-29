@@ -1,13 +1,44 @@
-import conf
+import os
+import time
 
-from hardware.robot.com import test_connection
+import conf
+from hardware.robot.com import *
 from hardware.robot.server import *
+from hardware.robot.step import *
+
+os.system("redis-server")
 
 def main():
-	if conf.LMOTOR_IP != '0.0.0.0':
-		test_connection(conf.LMOTOR_IP)
+	pid = os.fork()
+	## Executed in the new process
+	if pid == 0:
+		app.run(host='0.0.0.0')
 
-	if conf.RMOTOR_IP != '0.0.0.0':
-		test_connection(conf.RMOTOR_IP)
+	## Main process
+	else:
+		if conf.LMOTOR_IP != '0.0.0.0':
+			print("Waiting for LMOTOR ({0})".format(conf.LMOTOR_IP))
 
-	app.run(host='0.0.0.0')
+			while not test_connection(conf.LMOTOR_IP):
+				print("waiting...")
+				time.sleep(1)
+
+			print("Successfully connected to LMOTOR")
+		else:
+			print("LMOTOR not configured... skipping.")
+
+		if conf.RMOTOR_IP != '0.0.0.0':
+			print("Waiting for RMOTOR ({0})".format(conf.RMOTOR_IP))
+
+			while not test_connection(conf.RMOTOR_IP):
+				print("waiting...")
+				time.sleep(1)
+
+			print("Successfully connected to RMOTOR")
+		else:
+			print("RMOTOR not configured... skipping.")
+
+		## Entry point
+		print("Sending initial INSTRUCTION")
+		request_step(0)
+		print("------------------")
