@@ -12,7 +12,9 @@ class Encoder:
 
 
     def readSteps():
+        print('called')
         self.total_steps += 1
+        print(self.total_steps)
         return self.total_steps
 
     def resetSteps():
