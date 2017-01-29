@@ -6,7 +6,7 @@ from hardware.robot.com import *
 from hardware.robot.server import *
 from hardware.robot.step import *
 
-## TODO: ADD STANDBY UNTIL BOTH MOTORS CAN BE FOUND
+os.system("redis-server")
 
 def main():
 	pid = os.fork()
@@ -39,5 +39,6 @@ def main():
 			print("RMOTOR not configured... skipping.")
 
 		## Entry point
-		print("Initializing robot")
+		print("Sending initial INSTRUCTION")
 		request_step(0)
+		print("------------------")

@@ -58,15 +58,12 @@ def request_step(motor_id):
     global last_instruction_index
     global last_instruction
 
-    print(motor_id)
     if motor_id < len(motors_requested):
         motors_requested[motor_id] = True
 
     if check_all_requested() and position_is_close_enough_to_goal():
-        print("pass" + str(current_instruction_index))
+        # print("pass" + str(current_instruction_index))
         gen_next_instruction()
-        print("pass")
-
         from_x, from_y = last_instruction[1], last_instruction[2]
         goal_x, goal_y = current_instruction[1], current_instruction[2]
         turn_ratio = get_motor_spin_ratio(
@@ -83,7 +80,8 @@ def request_step(motor_id):
         ## IDs. 0 = top left, 1 = top right
         left_ratio = turn_ratio[0]/abs(turn_ratio[1])
         right_ratio = turn_ratio[1]/abs(turn_ratio[0])
+        ##TODO: Turn into an async send_turn_ratio if problems arise
         if conf.LMOTOR_IP != '0.0.0.0':
-            thread.start_new_thread(send_turn_ratio, (conf.LMOTOR_IP, left_ratio))
+            send_turn_ratio(conf.LMOTOR_IP, left_ratio)
         if conf.RMOTOR_IP != '0.0.0.0':
-            thread.start_new_thread(send_turn_ratio, (conf.RMOTOR_IP, right_ratio))
+            send_turn_ratio, (conf.RMOTOR_IP, right_ratio)

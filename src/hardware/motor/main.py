@@ -1,8 +1,6 @@
 import conf
 import os
 
-os.system("pigpiod")
-
 from hardware.motor.com import test_connection
 from hardware.motor.server import *
 from hardware.motor.motor import Motor_PWM

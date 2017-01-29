@@ -15,8 +15,9 @@ def run_step():
 
     form = dict(request.form)
     #Extracts the turn ratio from the form being sent
+    print("TURN RATIO: " + form['turn_ratio'][0])
     encoder_steps = MAX_ENCODER_STEPS * float(form['turn_ratio'][0])
-    print(encoder_steps)
+    print("ENCODER STEPS: " + encoder_steps)
     pwm.run(encoder_steps)
 
     return jsonify({"response": "Hello!"})
