@@ -1,4 +1,5 @@
 import pigpio
+import thread
 
 from conf import MAX_ENCODER_STEPS
 from hardware.motor.motor import Motor_PWM
@@ -27,4 +28,4 @@ def run(needed_encoder_steps):
     # motor.changeSpeed(90)
     # #Reset for next run
     # encoder.resetSteps()
-    send_ready()
+    thread.start_new_thread(send_ready, ())

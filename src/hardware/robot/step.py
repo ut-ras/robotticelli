@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 from time import sleep
+import thread
 import numpy as np
 
 import conf
@@ -83,6 +84,6 @@ def request_step(motor_id):
         left_ratio = turn_ratio[0]/abs(turn_ratio[1])
         right_ratio = turn_ratio[1]/abs(turn_ratio[0])
         if conf.LMOTOR_IP != '0.0.0.0':
-            send_turn_ratio(conf.LMOTOR_IP, left_ratio)
+            thread.start_new_thread(send_turn_ratio, (conf.LMOTOR_IP, left_ratio))
         if conf.RMOTOR_IP != '0.0.0.0':
-            send_turn_ratio(conf.RMOTOR_IP, right_ratio)
+            thread.start_new_thread(send_turn_ratio, (conf.RMOTOR_IP, right_ratio))
