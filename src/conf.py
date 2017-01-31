@@ -1,7 +1,7 @@
 #IP Destinations for robot components
-LMOTOR_IP = '10.156.2.190'
+LMOTOR_IP = '192.168.43.247'
 RMOTOR_IP  = '0.0.0.0'
-ROBOT_IP = '10.156.0.221'
+ROBOT_IP = '192.168.43.225'
 
 #String "LMOTOR", "RMOTOR", "ROBOT", or "SETUP"
 MODE = 'LMOTOR'

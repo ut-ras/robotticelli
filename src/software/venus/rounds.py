@@ -39,7 +39,6 @@ def find_short_path(coordinate_list):
 	coordinate_list_len = len(coordinate_list)
 	for i in range(coordinate_list_len):
 
-		print(str(np.round(float(i) * 100/coordinate_list_len, 4)) + "%", end="\r")
 		nearest_neighbor, nn_idx = find_nearest_neighbor(nearest_neighbor, coordinate_list);
 
 		del coordinate_list[nn_idx]
