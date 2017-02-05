@@ -1,7 +1,7 @@
 #IP Destinations for robot components
-LMOTOR_IP = '192.168.43.237'
+LMOTOR_IP = '10.156.1.236'
 RMOTOR_IP  = '0.0.0.0'
-ROBOT_IP = '192.168.43.225'
+ROBOT_IP = '10.156.1.91'
 
 #String "LMOTOR", "RMOTOR", "ROBOT", or "SETUP"
 MODE = 'ROBOT'
@@ -20,6 +20,7 @@ by = H * .1
 
 # Motor step parameters
 MAX_ENCODER_STEPS = 100
+DISTANCE_PER_STEP = .01
 
 ## DO NOT TOUCH
 IP = {
