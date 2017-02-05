@@ -1,6 +1,6 @@
 import numpy as np
 from conf import *
-
+from numpy.linalg import norm
 ## Generates turn ratios for motors
 
 def transform(r1, r2, vec):
@@ -16,7 +16,11 @@ def xytransform(x, y, vec):
 	'''
 	Finds r1 and r2 based on x,y and then does a basis transform of vec
 	'''
-	return transform([-x, H - y], [W - x, H - y], vec)
+	to_top_left = [-x, H - y]
+	to_top_right = [W - x, H - y]
+	dir_to_top_left = to_top_left/norm(to_top_left)
+	dir_to_top_right = to_top_right/norm(to_top_right)
+	return transform(dir_to_top_left, dir_to_top_right, vec)
 
 def get_motor_spin_capped(x, y, vec):
 	'''
@@ -24,6 +28,7 @@ def get_motor_spin_capped(x, y, vec):
 	Negative is out, positive is in
 	'''
 	res = xytransform(x, y, vec)
+	print("transform result: " + str(res))
 	## this normalizes the result for the biggest number.
 	if max(res) > DISTANCE_PER_STEP * MAX_ENCODER_STEPS:
 		return MAX_ENCODER_STEPS * res/(max(abs(res[0]), abs(res[1])) or 1);

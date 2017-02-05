@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 import numpy as np
 import conf
+from time import sleep
 
 from hardware.robot.modules.motor_math import get_motor_spin_capped
 from hardware.robot.modules.com import send_encoder_steps
@@ -62,6 +63,7 @@ def request_step(motor_id):
     if check_all_requested() and position_is_close_enough_to_goal():
         # print("pass" + str(current_instruction_index))
         gen_next_instruction()
+        print(current_instruction_index)
         from_x, from_y = last_instruction[1], last_instruction[2]
         goal_x, goal_y = current_instruction[1], current_instruction[2]
         turn_steps = get_motor_spin_capped(
@@ -73,7 +75,7 @@ def request_step(motor_id):
         ## Just the magnitude of how much it spins.
         ## So we need to take it's absolute value to get usable info
         ## This process is similar to atan2 in some ways
-
+        sleep(1)
         left_steps  = turn_steps[0]
         right_steps = turn_steps[1]
         ##TODO: Turn into an async send_turn_ratio if problems arise

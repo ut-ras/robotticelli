@@ -22,7 +22,7 @@ def run(needed_encoder_steps):
     #   print(encoder)
     #   encoder_total_steps = encoder.readSteps()
     #   print('blam zam')
-
+    sleep(1)
     #TODO: change this algorithm to work with kalman filter and PID
     #Motionless
     motor.changeSpeed(90)

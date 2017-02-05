@@ -2,7 +2,7 @@ import thread
 from flask import Flask, request, jsonify
 from celery import Celery
 
-from hardware.robot.step import request_step
+from hardware.robot.run import request_step
 
 app = Flask(__name__)
 app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'

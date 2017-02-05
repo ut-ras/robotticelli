@@ -20,7 +20,7 @@ by = H * .1
 
 # Motor step parameters
 MAX_ENCODER_STEPS = 100
-DISTANCE_PER_STEP = .1
+DISTANCE_PER_STEP = .01
 
 ## DO NOT TOUCH
 IP = {
