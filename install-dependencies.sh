@@ -7,6 +7,7 @@ apt-get install python-scipy
 apt-get install python-sklearn
 apt-get install pigpio
 apt-get install python-pigpio
+apt-get install redis
 
 pip install flask
 pip install grequests

@@ -13,13 +13,15 @@ elif conf.MODE == "SETUP":
     app.run(port=5000,host='0.0.0.0')
 
 elif conf.MODE == "ROBOT":
-    #os.system("redis-server")
-    #os.system("celery -A hardware.robot.server.celery worker")
+    os.system("celery -A hardware.robot.server.celery worker")
+
     from hardware.robot.main import main
     main()
 
 elif re.search(r"MOTOR",conf.MODE):
     os.system("pigpiod")
+    os.system("celery -A hardware.motor.server.celery worker")
+
     from hardware.motor.main import main
     main()
 
