@@ -1,5 +1,6 @@
 import pigpio
 import thread
+from time import sleep
 
 from conf import MAX_ENCODER_STEPS
 from hardware.motor.modules.motor import Motor_PWM
