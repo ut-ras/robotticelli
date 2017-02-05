@@ -4,7 +4,7 @@ RMOTOR_IP  = '0.0.0.0'
 ROBOT_IP = '192.168.43.225'
 
 #String "LMOTOR", "RMOTOR", "ROBOT", or "SETUP"
-MODE = 'ROBOT'
+MODE = 'MOTOR'
 
 # Wall parameters
 H  = 10   #Wall Height in m

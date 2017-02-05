@@ -7,10 +7,11 @@ apt-get install python-scipy
 apt-get install python-sklearn
 apt-get install pigpio
 apt-get install python-pigpio
-apt-get install redis
+apt-get install redis-server
 
 pip install flask
-pip install grequests
+pip install celery
+pip install redis
 
 if [ ! -d ./modules ]; then
 	mkdir ./modules
