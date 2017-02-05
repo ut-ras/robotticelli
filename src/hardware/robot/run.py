@@ -4,7 +4,7 @@ import thread
 import numpy as np
 
 import conf
-from hardware.robot.motor_math import get_motor_spin_ratio
+from hardware.robot.motor_math import get_motor_spin_capped
 from hardware.robot.com import send_turn_ratio
 
 ##
@@ -66,7 +66,7 @@ def request_step(motor_id):
         gen_next_instruction()
         from_x, from_y = last_instruction[1], last_instruction[2]
         goal_x, goal_y = current_instruction[1], current_instruction[2]
-        turn_ratio = get_motor_spin_ratio(
+        turn_steps = get_motor_spin_capped(
             from_x,
             from_y,
             (goal_x - from_x, goal_y - from_y)
@@ -76,12 +76,10 @@ def request_step(motor_id):
         ## So we need to take it's absolute value to get usable info
         ## This process is similar to atan2 in some ways
 
-        ## Notice the array indices here are based on motor numerical
-        ## IDs. 0 = top left, 1 = top right
-        left_ratio = turn_ratio[0]/abs(turn_ratio[1])
-        right_ratio = turn_ratio[1]/abs(turn_ratio[0])
+        left_steps  = turn_steps[0]
+        right_steps = turn_steps[1]
         ##TODO: Turn into an async send_turn_ratio if problems arise
         if conf.LMOTOR_IP != '0.0.0.0':
-            send_turn_ratio(conf.LMOTOR_IP, left_ratio)
+            send_encoder_steps(conf.LMOTOR_IP, left_steps)
         if conf.RMOTOR_IP != '0.0.0.0':
-            send_turn_ratio, (conf.RMOTOR_IP, right_ratio)
+            send_encoder_steps(conf.RMOTOR_IP, right_steps)

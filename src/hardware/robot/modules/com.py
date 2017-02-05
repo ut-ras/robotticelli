@@ -7,14 +7,14 @@ import os
 ##Module for communicating to the slaves.
 ##Wraps long HTTPRequests
 
-def send_turn_ratio(to_ip, ratio):
+def send_encoder_steps(to_ip, steps):
     '''
         This will let the main RPi module know
         that it is ready for the next motor
         instruction.
     '''
     headers = {"Content-type": "application/json"}
-    status = {'from': conf.IP[conf.MODE], 'turn_ratio': ratio}
+    status = {'from': conf.IP[conf.MODE], 'encoder_steps': steps}
     requests.post("http://{0}:5000/".format(to_ip), data=status)
     print("INSTRUCTION received by MOTOR at " + to_ip)
 
