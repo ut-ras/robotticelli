@@ -6,8 +6,6 @@ from hardware.robot.com import *
 from hardware.robot.server import *
 from hardware.robot.step import *
 
-os.system("redis-server")
-
 def main():
 	pid = os.fork()
 	## Executed in the new process
