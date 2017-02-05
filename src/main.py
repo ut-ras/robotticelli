@@ -13,8 +13,6 @@ elif conf.MODE == "SETUP":
     app.run(port=5000,host='0.0.0.0')
 
 elif conf.MODE == "ROBOT":
-    os.system("celery -A hardware.robot.server.celery worker")
-
     from hardware.robot.main import main
     main()
 
