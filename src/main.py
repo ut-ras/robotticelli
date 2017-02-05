@@ -18,7 +18,6 @@ elif conf.MODE == "ROBOT":
 
 elif re.search(r"MOTOR",conf.MODE):
     os.system("pigpiod")
-    os.system("celery -A hardware.motor.server.celery worker")
 
     from hardware.motor.main import main
     main()
