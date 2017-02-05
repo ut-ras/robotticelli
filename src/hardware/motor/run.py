@@ -21,8 +21,9 @@ def run(needed_encoder_steps):
     #while encoder_total_steps < abs(needed_encoder_steps):
     #   print(encoder)
     #   encoder_total_steps = encoder.readSteps()
-    #   print('blam zam')
+    print('blam zam')
     sleep(1)
+    print('zam blam')
     #TODO: change this algorithm to work with kalman filter and PID
     #Motionless
     motor.changeSpeed(90)
