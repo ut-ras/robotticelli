@@ -1,11 +1,9 @@
 from __future__ import absolute_import
-from time import sleep
-import thread
 import numpy as np
-
 import conf
-from hardware.robot.motor_math import get_motor_spin_capped
-from hardware.robot.com import send_turn_ratio
+
+from hardware.robot.modules.motor_math import get_motor_spin_capped
+from hardware.robot.modules.com import send_encoder_steps
 
 ##
 ## This is the code that instructs how to get from A to B

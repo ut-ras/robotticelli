@@ -22,11 +22,13 @@ def run_step():
     ## once it has stepped [encoder_steps] time, the program will
     ## message the robot RPi that this motor is ready for instructions
     form = dict(request.form)
-    encoder_steps = int(form['encoder_steps'][0])
-
-    ## Debugging purposes
-    print("ENCODER STEPS: " + str(encoder_steps))
-    async_run_step.delay(encoder_steps)
+    if 'encoder_steps' in form:
+        encoder_steps = form['encoder_steps'][0]
+        ## Debugging purposes
+        print("ENCODER STEPS: " + str(encoder_steps))
+        async_run_step.delay(encoder_steps)
+    else:
+        print("Faulty request, encoder steps not found")
 
     return jsonify({"response": "Hello!"})
 

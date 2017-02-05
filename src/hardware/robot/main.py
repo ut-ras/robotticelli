@@ -1,10 +1,10 @@
 import os
 import time
-
 import conf
-from hardware.robot.com import *
+
+from hardware.robot.modules.com import *
 from hardware.robot.server import *
-from hardware.robot.step import *
+from hardware.robot.run import *
 
 def main():
 	pid = os.fork()

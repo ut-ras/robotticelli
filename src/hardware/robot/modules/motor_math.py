@@ -25,7 +25,7 @@ def get_motor_spin_capped(x, y, vec):
 	'''
 	res = xytransform(x, y, vec)
 	## this normalizes the result for the biggest number.
-	if max(x) > DISTANCE_PER_STEP * MAX_ENCODER_STEPS:
+	if max(res) > DISTANCE_PER_STEP * MAX_ENCODER_STEPS:
 		return MAX_ENCODER_STEPS * res/(max(abs(res[0]), abs(res[1])) or 1);
 	else:
 		return res/DISTANCE_PER_STEP

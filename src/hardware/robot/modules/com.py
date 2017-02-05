@@ -15,6 +15,7 @@ def send_encoder_steps(to_ip, steps):
     '''
     headers = {"Content-type": "application/json"}
     status = {'from': conf.IP[conf.MODE], 'encoder_steps': steps}
+    print(status)
     requests.post("http://{0}:5000/".format(to_ip), data=status)
     print("INSTRUCTION received by MOTOR at " + to_ip)
 
