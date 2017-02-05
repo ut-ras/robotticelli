@@ -26,7 +26,7 @@ def run_step():
         encoder_steps = form['encoder_steps'][0]
         ## Debugging purposes
         print("ENCODER STEPS: " + str(encoder_steps))
-        async_run_step.delay(encoder_steps)
+        async_run_step.delay(round(float(encoder_steps)))
     else:
         print("Faulty request, encoder steps not found")
 
