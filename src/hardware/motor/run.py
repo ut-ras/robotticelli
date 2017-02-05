@@ -2,9 +2,9 @@ import pigpio
 import thread
 
 from conf import MAX_ENCODER_STEPS
-from hardware.motor.motor import Motor_PWM
-from hardware.motor.encoder import Encoder
-from hardware.motor.com import send_ready
+from hardware.motor.modules.motor import Motor_PWM
+from hardware.motor.modules.encoder import Encoder
+from hardware.motor.modules.com import send_ready
 
 ## create a DC motor PWM output on pins 0, 1
 ## 0 controls forwards, 1 controls backwards

@@ -2,8 +2,9 @@ from flask import Flask
 from flask import request
 from flask import jsonify
 from conf import MAX_ENCODER_STEPS
-import hardware.motor.pwm as pwm
 from celery import Celery
+
+import hardware.motor.run as pwm
 
 app = Flask(__name__)
 app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
