@@ -3,9 +3,18 @@ from flask import request
 from flask import jsonify
 from conf import MAX_ENCODER_STEPS
 import hardware.motor.pwm as pwm
-
+from celery import Celery
 
 app = Flask(__name__)
+app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
+app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
+
+celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
+celery.conf.update(app.config)
+
+@celery.task
+def async_run_step(encoder_steps):
+    pwm.run(encoder_steps)
 
 @app.route("/", methods=['POST'])
 def run_step():
@@ -13,17 +22,17 @@ def run_step():
     ## once it has stepped [encoder_steps] time, the program will
     ## message the robot RPi that this motor is ready for instructions
     form = dict(request.form)
-    #Extracts the turn ratio from the form being sent
-    encoder_steps = MAX_ENCODER_STEPS * float(form['turn_ratio'][0])
-    print("TURN RATIO: " + form['turn_ratio'][0])
+    encoder_steps = int(form['encoder_steps'][0])
+
+    ## Debugging purposes
     print("ENCODER STEPS: " + str(encoder_steps))
-    pwm.run(encoder_steps)
+    async_run_step.delay(encoder_steps)
 
     return jsonify({"response": "Hello!"})
 
 @app.route("/test", methods=['POST'])
 def test():
-    print("Received request from MOTOR")
+    print("Received test from ROBOT")
     return jsonify({"response": "Hello!"})
 
 if __name__ == "__main__":
