@@ -73,8 +73,9 @@ def request_step(motor_id):
         sleep(1)
         left_steps  = turn_steps[0]
         right_steps = turn_steps[1]
+        fastest = abs(max(turn_steps))
         ##TODO: Turn into an async send_turn_ratio if problems arise
         if conf.LMOTOR_IP != '0.0.0.0':
-            send_encoder_steps(conf.LMOTOR_IP, left_steps)
+            send_encoder_steps(conf.LMOTOR_IP, left_steps, left_steps/fastest)
         if conf.RMOTOR_IP != '0.0.0.0':
-            send_encoder_steps(conf.RMOTOR_IP, right_steps)
+            send_encoder_steps(conf.RMOTOR_IP, right_steps, right_steps/fastest)

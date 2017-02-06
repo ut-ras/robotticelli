@@ -12,13 +12,13 @@ from hardware.motor.modules.com import send_ready
 motor = Motor_PWM(12, 13)
 encoder = Encoder(13, 14)
 
-def run(needed_encoder_steps):
+def run(needed_encoder_steps, spin_turn_ratio):
     global motor
     global encoder
 
     direction = 0
     encoder_total_steps = 0
-    motor.changeSpeed(90 * (1 +  needed_encoder_steps/MAX_ENCODER_STEPS))
+    motor.changeSpeed(90 * (1 +  spin_turn_ratio))
     #while encoder_total_steps < abs(needed_encoder_steps):
     #   print(encoder)
     #   encoder_total_steps = encoder.readSteps()
