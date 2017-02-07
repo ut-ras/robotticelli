@@ -70,7 +70,6 @@ def request_step(motor_id):
             from_y,
             (goal_x - from_x, goal_y - from_y)
         )
-        sleep(1)
         left_steps  = turn_steps[0]
         right_steps = turn_steps[1]
         fastest = abs(max(turn_steps))
