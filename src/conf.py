@@ -1,10 +1,10 @@
 #IP Destinations for robot components
-LMOTOR_IP = '10.156.1.236'
+LMOTOR_IP = '169.254.111.206'
 RMOTOR_IP  = '0.0.0.0'
-ROBOT_IP = '10.156.1.91'
+ROBOT_IP = '169.254.44.235'
 
 #String "LMOTOR", "RMOTOR", "ROBOT", or "SETUP"
-MODE = 'ROBOT'
+MODE = 'LMOTOR'
 
 # Wall parameters
 H  = 10   #Wall Height in m
