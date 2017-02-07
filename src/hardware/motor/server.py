@@ -15,7 +15,7 @@ celery.conf.update(app.config)
 
 @celery.task
 def async_run_step(encoder_step, turn_ratio):
-    pwm.run(encoder_steps, turn_ratio)
+    pwm.run(encoder_step, turn_ratio)
 
 @app.route("/", methods=['POST'])
 def run_step():

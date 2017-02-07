@@ -11,7 +11,7 @@ def main():
 	## Executed in the new process
 	print("Forking server")
 	if pid == 0:
-		app.run(host='0.0.0.0')
+		app.run(host='0.0.0.0', port=5830)
 	else:
 		pid2 = os.fork()
 		if pid2 == 0:

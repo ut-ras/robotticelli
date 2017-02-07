@@ -20,7 +20,7 @@ def send_encoder_steps(to_ip, steps, ratio):
         'turn_ratio': ratio,
     }
     print(status)
-    requests.post("http://{0}:5000/".format(to_ip), data=status)
+    requests.post("http://{0}:5830/".format(to_ip), data=status)
     print("INSTRUCTION received by MOTOR at " + to_ip)
 
 def test_connection(to_ip):

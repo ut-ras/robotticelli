@@ -18,7 +18,7 @@ def run(needed_encoder_steps, spin_turn_ratio):
 
     direction = 0
     encoder_total_steps = 0
-    motor.changeSpeed(90 * (1 +  spin_turn_ratio))
+    motor.changeSpeed(90 * (1 +  max(min(spin_turn_ratio, .99), -.99))) ##FIX THIS
     #while encoder_total_steps < abs(needed_encoder_steps):
     #   print(encoder)
     #   encoder_total_steps = encoder.readSteps()

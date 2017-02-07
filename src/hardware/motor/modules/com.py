@@ -29,7 +29,7 @@ def send_ready():
         'motor_id': motor_id
     }
     print(status)
-    response = requests.post("http://{0}:5000/status".format(conf.IP['ROBOT']), data=status)
+    response = requests.post("http://{0}:5830/status".format(conf.IP['ROBOT']), data=status)
     print(response, response.text)
 
 def test_connection(to_ip):
@@ -39,7 +39,7 @@ def test_connection(to_ip):
             module
         '''
         status  = urllib.urlencode({'from': conf.IP[conf.MODE]})
-        conn = httplib.HTTPConnection(to_ip, port=5000);
+        conn = httplib.HTTPConnection(to_ip, port=5830);
         conn.request("POST", "/test", status)
         content = conn.getresponse()
         print(content.reason, content.status)
