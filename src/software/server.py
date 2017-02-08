@@ -4,6 +4,7 @@ from flask import render_template
 from flask import jsonify
 from time import time
 from base64 import b64encode
+from conf import PORT
 import os
 
 from .primavera.primavera.primavera import primavera
@@ -65,4 +66,4 @@ def queue_run():
         return jsonify(**{'img': data_uri})
 
 if __name__ == "__main__":
-    app.run(port=5000, host='0.0.0.0')
+    app.run(port=PORT, host='0.0.0.0')

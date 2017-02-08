@@ -10,14 +10,14 @@ if conf.MODE == None:
 elif conf.MODE == "SETUP":
     from software.server import *
     print("Please use a browser visit 127.0.0.1:5000 to process image")
-    app.run(port=5000,host='0.0.0.0')
+    app.run(port=conf.PORT,host='0.0.0.0')
 
 elif conf.MODE == "ROBOT":
     from hardware.robot.main import main
     main()
 
 elif re.search(r"MOTOR",conf.MODE):
-    os.system("pigpiod")
+    os.system("pigpiod -x -1")
 
     from hardware.motor.main import main
     main()

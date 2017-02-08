@@ -1,10 +1,12 @@
 #IP Destinations for robot components
-LMOTOR_IP = '10.156.1.236'
+LMOTOR_IP = '169.254.111.206'
 RMOTOR_IP  = '0.0.0.0'
-ROBOT_IP = '10.156.1.91'
+ROBOT_IP = '169.254.44.235'
+
+PORT = 5830
 
 #String "LMOTOR", "RMOTOR", "ROBOT", or "SETUP"
-MODE = 'ROBOT'
+MODE = 'LMOTOR'
 
 # Wall parameters
 H  = 10   #Wall Height in m
@@ -20,7 +22,7 @@ by = H * .1
 
 # Motor step parameters
 MAX_ENCODER_STEPS = 100
-DISTANCE_PER_STEP = .01
+DISTANCE_PER_STEP = .01 #Travel before encoder clicks in meters
 
 ## DO NOT TOUCH
 IP = {

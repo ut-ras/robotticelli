@@ -2,6 +2,7 @@ from flask import Flask
 from flask import request
 from flask import jsonify
 from conf import MAX_ENCODER_STEPS
+from conf import PORT
 from celery import Celery
 
 import hardware.motor.run as pwm
@@ -24,10 +25,10 @@ def run_step():
     ## message the robot RPi that this motor is ready for instructions
     form = dict(request.form)
     if 'encoder_steps' in form:
-        encoder_steps = form['encoder_steps'][0]
+        encoder_steps = round(float(form['encoder_steps'][0]))
         ## Debugging purposes
         print("ENCODER STEPS: " + str(encoder_steps))
-        async_run_step.delay(round(float(encoder_steps)))
+        async_run_step.delay(encoder_steps)
     else:
         print("Faulty request, encoder steps not found")
 
@@ -39,4 +40,4 @@ def test():
     return jsonify({"response": "Hello!"})
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=PORT)
