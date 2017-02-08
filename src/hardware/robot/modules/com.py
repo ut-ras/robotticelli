@@ -19,7 +19,7 @@ def send_encoder_steps(to_ip, steps):
         'encoder_steps': steps,
     }
     print(status)
-    requests.post("http://{0}:5830/".format(to_ip), data=status)
+    requests.post("http://{0}:{1}/".format(to_ip, conf.PORT), data=status)
     print("INSTRUCTION received by MOTOR at " + to_ip)
 
 def test_connection(to_ip):

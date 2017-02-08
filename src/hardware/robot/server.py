@@ -31,4 +31,5 @@ def test():
     return jsonify({"response": "Hello!"})
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    from conf import PORT
+    app.run(host='0.0.0.0', port=PORT)

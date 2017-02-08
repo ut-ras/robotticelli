@@ -2,6 +2,7 @@ from flask import Flask
 from flask import request
 from flask import jsonify
 from conf import MAX_ENCODER_STEPS
+from conf import PORT
 from celery import Celery
 
 import hardware.motor.run as pwm
@@ -39,4 +40,4 @@ def test():
     return jsonify({"response": "Hello!"})
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=PORT)
