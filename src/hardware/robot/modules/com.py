@@ -7,7 +7,7 @@ import os
 ##Module for communicating to the slaves.
 ##Wraps long HTTPRequests
 
-def send_encoder_steps(to_ip, steps, ratio):
+def send_encoder_steps(to_ip, steps):
     '''
         This will let the main RPi module know
         that it is ready for the next motor
@@ -17,7 +17,6 @@ def send_encoder_steps(to_ip, steps, ratio):
     status = {
         'from': conf.IP[conf.MODE],
         'encoder_steps': steps,
-        'turn_ratio': ratio,
     }
     print(status)
     requests.post("http://{0}:5830/".format(to_ip), data=status)

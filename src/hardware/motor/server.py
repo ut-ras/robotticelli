@@ -14,8 +14,8 @@ celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
 celery.conf.update(app.config)
 
 @celery.task
-def async_run_step(encoder_step, turn_ratio):
-    pwm.run(encoder_step, turn_ratio)
+def async_run_step(encoder_steps):
+    pwm.run(encoder_steps)
 
 @app.route("/", methods=['POST'])
 def run_step():
@@ -25,10 +25,9 @@ def run_step():
     form = dict(request.form)
     if 'encoder_steps' in form:
         encoder_steps = round(float(form['encoder_steps'][0]))
-        turn_ratio = float(form['turn_ratio'][0])
         ## Debugging purposes
         print("ENCODER STEPS: " + str(encoder_steps))
-        async_run_step.delay(encoder_steps, turn_ratio)
+        async_run_step.delay(encoder_steps)
     else:
         print("Faulty request, encoder steps not found")
 
