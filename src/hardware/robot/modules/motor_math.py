@@ -30,9 +30,10 @@ def get_motor_spin_capped(x, y, vec):
 	res = xytransform(x, y, vec)
 	print("transform result: " + str(res))
 	## this normalizes the result for the biggest number.
-	if max(res) > DISTANCE_PER_STEP * MAX_ENCODER_STEPS:
+	biggest_step = max(abs(res[0]), abs(res[1]))
+	if biggest_step > DISTANCE_PER_STEP * MAX_ENCODER_STEPS:
 		print("Distance too big to cover... scaling")
-		return MAX_ENCODER_STEPS * res/(max(abs(res[0]), abs(res[1])) or 1);
+		return MAX_ENCODER_STEPS * res/(biggest_step or 1)
 	else:
 		return res/DISTANCE_PER_STEP
 

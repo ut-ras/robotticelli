@@ -29,7 +29,7 @@ def test_connection(to_ip):
             module
         '''
         status  = urllib.urlencode({'from': conf.IP[conf.MODE]})
-        conn = httplib.HTTPConnection(to_ip, port=5000);
+        conn = httplib.HTTPConnection(to_ip, port=conf.PORT);
         conn.request("POST", "/test", status)
         content = conn.getresponse()
         conn.close()
