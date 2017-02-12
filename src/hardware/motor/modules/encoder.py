@@ -35,8 +35,8 @@ class Encoder:
         GPIO.setup(self.pin_a, GPIO.IN)
         GPIO.setup(self.pin_b, GPIO.IN)
 
-        GPIO.add_event_detect(pin_a, GPIO.RISING, callback=self.rotary_interrupt)
-        GPIO.add_event_detect(pin_b, GPIO.RISING, callback=self.rotary_interrupt)
+        GPIO.add_event_detect(pin_a, GPIO.RISING, callback=self.rotary_interrupt, bouncetime=50)
+        GPIO.add_event_detect(pin_b, GPIO.RISING, callback=self.rotary_interrupt, bouncetime=50)
 
     def rotary_interrupt(self, pin):
         new_a_val = GPIO.input(self.pin_a)
