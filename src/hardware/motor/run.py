@@ -18,7 +18,7 @@ def run(needed_encoder_steps, spin_turn_ratio):
 
     direction = 0
     encoder_total_steps = 0
-    motor.changeSpeed(90 * (1 +  spin_turn_ratio))
+    motor.changeSpeedAndDir(100 * (1 +  spin_turn_ratio), direction)
     #while encoder_total_steps < abs(needed_encoder_steps):
     #   print(encoder)
     #   encoder_total_steps = encoder.readSteps()
@@ -31,3 +31,6 @@ def run(needed_encoder_steps, spin_turn_ratio):
     #Reset for next run
     encoder.resetSteps()
     send_ready()
+
+def testMotor():
+
