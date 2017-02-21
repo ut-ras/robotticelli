@@ -17,7 +17,7 @@ elif conf.MODE == "ROBOT":
     main()
 
 elif re.search(r"MOTOR",conf.MODE):
-    os.system("pigpiod -x -1")
+    os.system("pigpiod -x -1 -s 1")
 
     from hardware.motor.main import main
     main()

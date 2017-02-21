@@ -1,4 +1,6 @@
 import pigpio as pigpio
+import threading
+from time import sleep
 
 class Motor_PWM:
     '''
@@ -15,6 +17,11 @@ class Motor_PWM:
     fault1 = None
     fault2 = None
     pi = None
+
+    currentSpeed = None
+    currentDirection = None
+
+    lock = threading.Lock()
 
     def __init__(self, fwd, pDir, res, CS, FF1, FF2, rate=20000):
         '''
@@ -35,20 +42,22 @@ class Motor_PWM:
         self.fault1 = FF1
         self.fault2 = FF2
         self.pi = pigpio.pi()
+	self.currentSpeed=0
+	self.currentDirection=0
 
         ## Turn fwd and direction into output pins
         self.pi.set_mode(fwd, pigpio.OUTPUT)
         self.pi.set_mode(pDir, pigpio.OUTPUT)
-        self.pi.set_mode(reset, pigpio.OUTPUT)
+        self.pi.set_mode(res, pigpio.OUTPUT)
 
         ## Turn current sense and fault pins into input pins
-        self.pi.set_mode(fault1, pigpio.INPUT)
-        self.pi.set_mode(fault2, pigpio.INPUT)
-        self.pi.set_mode(currentSense, pigpio.INPUT)
+        self.pi.set_mode(FF1, pigpio.INPUT)
+        self.pi.set_mode(FF2, pigpio.INPUT)
+        self.pi.set_mode(CS, pigpio.INPUT)
 
         ## Initializing fault interrupts
-        pi.callback(fault1, pigpio.RISING_EDGE, fault)
-        pi.callback(fault2, pigpio.RISING_EDGE, fault)
+        self.pi.callback(FF1, pigpio.RISING_EDGE, self.fault)
+        self.pi.callback(FF2, pigpio.RISING_EDGE, self.fault)
 
         ## Initializing pins to operate at [rate] frequency
         self.pi.set_PWM_frequency(fwd, rate)
@@ -69,10 +78,24 @@ class Motor_PWM:
             raise ValueError('Speed must be between 0 and 100 inclusive')
 
         ## Adjusting PWM to match calculated duty cycles
-        self.pi.set_PWM_dutycycle(self.forward, forward_duty_cycle)
-
+	self.lock.acquire()
+	currentSpeed = self.currentSpeed
+	currentDir = self.currentDirection
+	## TODO: Encoder callback to make more threadsafe
         ## Setting the direction of the motor
-        self.pi.write(self.direction, mDir)
+	if currentDir != mDir:
+		for i in range(currentSpeed, 0, -1):
+			self.pi.set_PWM_dutycycle(self.forward, i)
+			sleep(0.01)
+		self.pi.write(self.direction, mDir)
+		currentSpeed=0
+
+	for i in range(currentSpeed, speed, (currentSpeed > speed) and -1 or 1):
+        	self.pi.set_PWM_dutycycle(self.forward, i)
+		sleep(0.01)
+	self.currentSpeed = speed
+	self.currentDirection = mDir
+	self.lock.release()
 
     def stop(self):
         '''Stops PWM at the pins but leaves the daemon running'''
@@ -84,11 +107,11 @@ class Motor_PWM:
     def fault(self):
         ## detects fault, stops motor, and notes which fault occurred
         '''Detected fault '''
-        if: self.fault1 and self.fault2
+        if self.fault1 and self.fault2:
             print "Detected fault under voltage"
-        elif self.fault1
+        elif self.fault1:
             print "Detected fault overtemp"
-        elif self.fault2
+        elif self.fault2:
             print "Detected fault short circuit"
         stop(self)
 
