@@ -9,7 +9,7 @@ from hardware.motor.modules.com import send_ready
 
 ## create a DC motor PWM output on pins 0, 1
 ## 0 controls forwards, 1 controls backwards
-motor = Motor_PWM(12, 13)
+motor = Motor_PWM(18, 17, 4, 27, 23, 24)
 encoder = Encoder(13, 14)
 
 def run(needed_encoder_steps, spin_turn_ratio):
@@ -27,10 +27,8 @@ def run(needed_encoder_steps, spin_turn_ratio):
     print('zam blam')
     #TODO: change this algorithm to work with kalman filter and PID
     #Motionless
-    motor.changeSpeed(90)
+    motor.changeSpeedAndDir(90)
     #Reset for next run
     encoder.resetSteps()
     send_ready()
-
-def testMotor():
 
