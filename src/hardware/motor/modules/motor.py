@@ -16,7 +16,7 @@ class Motor_PWM:
     fault2 = None
     pi = None
 
-    def __init__(self, fwd, pDir, rate=20000):
+    def __init__(self, fwd, pDir, res, CS, FF1, FF2, rate=20000):
         '''
             Starts PWM on the fwd pin and
             back pin, with a rate of [rate]
@@ -30,6 +30,10 @@ class Motor_PWM:
         ## they can be used by other functions
         self.forward  = fwd
         self.direction = pDir
+        self.reset = res
+        self.currentSense = CS
+        self.fault1 = FF1
+        self.fault2 = FF2
         self.pi = pigpio.pi()
 
         ## Turn fwd and direction into output pins
