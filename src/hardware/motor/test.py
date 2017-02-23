@@ -5,7 +5,7 @@ from time import sleep
 from modules.motor import Motor_PWM
 
 my_motor = Motor_PWM(18, 17, 4, 27, 23, 24)
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(prefix_chars='@')
 parser.add_argument('integers', metavar='N',type=int,nargs='+')
 
 duty_cycles = parser.parse_args().integers

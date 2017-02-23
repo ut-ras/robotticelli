@@ -23,7 +23,7 @@ class Encoder:
 
     ## Used to lock system state changes so that add_event_detect doesn't
     ## conflicct with something like reset_steps
-    lock = threading.lock()
+    lock = threading.Lock()
 
     def __init__(self, pin1, pin2):
         self.rotary_counter = 0
@@ -53,7 +53,7 @@ class Encoder:
         if (new_a_val and new_b_val):
             self.lock.acquire()
 
-            if (pin = self.pin_b):
+            if (pin == self.pin_b):
                 self.rotary_counter += 1
             else:
                 self.rotary_counter -= 1
@@ -68,7 +68,7 @@ class Encoder:
         num_steps = self.rotary_counter - self.last_counter
         self.reset_steps()
 
-        self.lock.release()
+        self.lock.re lease()
 
         return num_steps
 

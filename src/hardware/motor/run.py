@@ -16,13 +16,17 @@ def run(needed_encoder_steps):
     global motor
     global encoder
 
-    direction = 0
-    encoder_total_steps = 0
-    motor.changeSpeedandDir(100 * abs(needed_encoder_steps/MAX_ENCODER_STEPS), direction)
+    speed = needed_encoder_steps/MAX_ENCODER_STEPS
+    direction = speed > 0 and 0 or 1
+    motor.changeSpeedandDir(100 * abs(speed), direction)
+    
+
+    ## Execute until encoder has stepped enough
+    needed_encoder_steps = 0
     #while encoder_total_steps < abs(needed_encoder_steps):
     #   print(encoder)
     #   encoder_total_steps = encoder.readSteps()
-    print('blam zam')
+
     sleep(1)
     #TODO: change this algorithm to work with kalman filter and PID
     #Motionless

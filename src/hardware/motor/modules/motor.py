@@ -1,4 +1,4 @@
-import pigpio as pigpio
+import pigpio
 import threading
 from time import sleep
 
@@ -42,7 +42,7 @@ class Motor_PWM:
         self.fault1 = FF1
         self.fault2 = FF2
         self.pi = pigpio.pi()
-	self.currentSpeed=0
+	self.currentSpeed = 0
 	self.currentDirection=0
 
         ## Turn fwd and direction into output pins
@@ -68,33 +68,38 @@ class Motor_PWM:
         ## Change scale of speed from 0-512 to 0-180
         self.pi.set_PWM_range(fwd, 100)
 
+    def lerp_speed(self, speed):
+        '''
+	     Smoothly changes speed from one to another by
+	     using linear interpolation
+	'''
+	currentSpeed = self.currentSpeed
+        if currentSpeed > speed:
+	    for i in range(currentSpeed, speed, -1):
+	    	self.pi.set_PWM_dutycycle(self.forward, i)
+		sleep(0.01)
+	    self.currentSpeed = speed
+
     def changeSpeedAndDir(self, speed, mDir):
         '''
             Changes the speed and direction of a motor. [speed] is a
             float between 0 and 100. [pDir] is the direction of power
             flow on the motor making it go forward or backward
         '''
-        if speed < 0 or speed >100:
+        if speed < 0 or speed > 100:
             raise ValueError('Speed must be between 0 and 100 inclusive')
 
         ## Adjusting PWM to match calculated duty cycles
 	self.lock.acquire()
-	currentSpeed = self.currentSpeed
-	currentDir = self.currentDirection
+
 	## TODO: Encoder callback to make more threadsafe
         ## Setting the direction of the motor
-	if currentDir != mDir:
-		for i in range(currentSpeed, 0, -1):
-			self.pi.set_PWM_dutycycle(self.forward, i)
-			sleep(0.01)
+	if self.currentDirection != mDir:
+		self.lerp_speed(speed)
 		self.pi.write(self.direction, mDir)
-		currentSpeed=0
+		self.currentDirection = mDir
+	lerp_speed(speed)
 
-	for i in range(currentSpeed, speed, (currentSpeed > speed) and -1 or 1):
-        	self.pi.set_PWM_dutycycle(self.forward, i)
-		sleep(0.01)
-	self.currentSpeed = speed
-	self.currentDirection = mDir
 	self.lock.release()
 
     def stop(self):
