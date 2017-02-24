@@ -74,11 +74,10 @@ class Motor_PWM:
 	     using linear interpolation
 	'''
 	currentSpeed = self.currentSpeed
-        if currentSpeed > speed:
-	    for i in range(currentSpeed, speed, -1):
-	    	self.pi.set_PWM_dutycycle(self.forward, i)
-		sleep(0.01)
-	    self.currentSpeed = speed
+	for i in range(currentSpeed, speed, -1 if currentSpeed > speed else 1):
+	    self.pi.set_PWM_dutycycle(self.forward, i)
+	    sleep(0.01)
+	self.currentSpeed = speed
 
     def changeSpeedAndDir(self, speed, mDir):
         '''
@@ -95,10 +94,10 @@ class Motor_PWM:
 	## TODO: Encoder callback to make more threadsafe
         ## Setting the direction of the motor
 	if self.currentDirection != mDir:
-		self.lerp_speed(speed)
+		self.lerp_speed(0)
 		self.pi.write(self.direction, mDir)
 		self.currentDirection = mDir
-	lerp_speed(speed)
+	self.lerp_speed(speed)
 
 	self.lock.release()
 
