@@ -42,4 +42,4 @@ def main():
 			print("------------------")
 		else:
 			print("Forking BACKGROUND worker")
-			os.system("celery -A hardware.robot.server.celery worker --concurrency=1")
+			os.system("python -m celery -A hardware.robot.server.celery worker --concurrency=1")

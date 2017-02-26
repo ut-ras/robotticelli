@@ -1,5 +1,4 @@
-##TODO: look into using pigpio in the future?
-import RPi.GPIO as GPIO
+import pigpio
 import threading
 from time import sleep
 class Encoder:
@@ -8,7 +7,8 @@ class Encoder:
         to the winch. Requires two general purpose IO
         pins to be used on the Raspberry Pi
     '''
-
+    
+    pi = pigpio.pi()
     ## State of our system
     rotary_counter = 0;
     last_counter = 0;
@@ -23,27 +23,26 @@ class Encoder:
 
     ## Used to lock system state changes so that add_event_detect doesn't
     ## conflicct with something like reset_steps
-    lock = threading.lock()
+    lock = threading.Lock()
 
     def __init__(self, pin1, pin2):
         self.rotary_counter = 0
         self.pin_a = pin1
+
         self.pin_b = pin2
 
-        GPIO.setmode(GPIO.BCM)
+        self.pi.set_mode(self.pin_a, pigpio.INPUT)
+        self.pi.set_mode(self.pin_b, pigpio.INPUT)
 
-        GPIO.setup(self.pin_a, GPIO.IN)
-        GPIO.setup(self.pin_b, GPIO.IN)
-
-        GPIO.add_event_detect(pin_a, GPIO.RISING, callback=self.rotary_interrupt, bouncetime=50)
-        GPIO.add_event_detect(pin_b, GPIO.RISING, callback=self.rotary_interrupt, bouncetime=50)
+        self.pi.callback(self.pin_a, pigpio.RISING_EDGE, self.rotary_interrupt)
+        self.pi.callback(self.pin_b, pigpio.RISING_EDGE, self.rotary_interrupt)
 
     def rotary_interrupt(self, pin):
-        new_a_val = GPIO.input(self.pin_a)
-        new_b_val = GPIO.input(self.pin_b)
+        new_a_val = self.pi.read(self.pin_a)
+        new_b_val = self.pi.read(self.pin_b)
 
         ## If this function was fired and there is really no change
-        if (pin_a_val == new_a_val and pin_b_val == new_b_val):
+        if (self.pin_a_val == new_a_val and self.pin_b_val == new_b_val):
             return
 
         self.pin_a_val = new_a_val
@@ -53,7 +52,7 @@ class Encoder:
         if (new_a_val and new_b_val):
             self.lock.acquire()
 
-            if (pin = self.pin_b):
+            if (pin == self.pin_b):
                 self.rotary_counter += 1
             else:
                 self.rotary_counter -= 1
@@ -89,9 +88,5 @@ class Encoder:
 
     ## Steps all state counters to zero
     def reset_steps(self):
-        self.lock.acquire()
-
         self.rotary_counter = 0
         self.last_counter = 0
-
-        self.lock.release()
