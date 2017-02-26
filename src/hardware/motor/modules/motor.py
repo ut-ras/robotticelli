@@ -42,8 +42,8 @@ class Motor_PWM:
         self.fault1 = FF1
         self.fault2 = FF2
         self.pi = pigpio.pi()
-	self.currentSpeed = 0
-	self.currentDirection=0
+        self.currentSpeed = 0
+        self.currentDirection=0
 
         ## Turn fwd and direction into output pins
         self.pi.set_mode(fwd, pigpio.OUTPUT)
@@ -73,11 +73,11 @@ class Motor_PWM:
 	     Smoothly changes speed from one to another by
 	     using linear interpolation
 	'''
-	currentSpeed = self.currentSpeed
-	for i in range(currentSpeed, speed, -1 if currentSpeed > speed else 1):
-	    self.pi.set_PWM_dutycycle(self.forward, i)
-	    sleep(0.01)
-	self.currentSpeed = speed
+        currentSpeed = self.currentSpeed
+        for i in range(currentSpeed, speed, -1 if currentSpeed > speed else 1):
+            self.pi.set_PWM_dutycycle(self.forward, i)
+            sleep(0.01)
+        self.currentSpeed = speed
 
     def changeSpeedAndDir(self, speed, mDir):
         '''
@@ -89,33 +89,36 @@ class Motor_PWM:
             raise ValueError('Speed must be between 0 and 100 inclusive')
 
         ## Adjusting PWM to match calculated duty cycles
-	self.lock.acquire()
+        self.lock.acquire()
 
 	## TODO: Encoder callback to make more threadsafe
         ## Setting the direction of the motor
-	if self.currentDirection != mDir:
-		self.lerp_speed(0)
-		self.pi.write(self.direction, mDir)
-		self.currentDirection = mDir
-	self.lerp_speed(speed)
+        if self.currentDirection != mDir:
+                self.lerp_speed(0)
+                self.pi.write(self.direction, mDir)
+                self.currentDirection = mDir
+        self.lerp_speed(speed)
 
-	self.lock.release()
+        self.lock.release()
 
     def stop(self):
         '''Stops PWM at the pins but leaves the daemon running'''
         self.pi.changeSpeed(0);
 
         ## Changes motor driver to low energy mode
-        self.write(self.reset, 0)
+        ## TODO: INSPECT THIS
+        self.pi.write(self.reset, 0)
 
     def fault(self):
         ## detects fault, stops motor, and notes which fault occurred
+        fault1 = self.pi.read(fault1)
+        fault2 = self.pi.read(fault2)
         '''Detected fault '''
-        if self.fault1 and self.fault2:
-            print "Detected fault under voltage"
-        elif self.fault1:
-            print "Detected fault overtemp"
-        elif self.fault2:
-            print "Detected fault short circuit"
+        if fault1 and fault2:
+                print("Detected fault under voltage")
+        elif fault1:
+                print("Detected fault overtemp")
+        elif fault2:
+                print("Detected fault short circuit")
         stop(self)
 
