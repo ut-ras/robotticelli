@@ -7,7 +7,7 @@ class Encoder:
         to the winch. Requires two general purpose IO
         pins to be used on the Raspberry Pi
     '''
-    
+
     pi = pigpio.pi()
     ## State of our system
     rotary_counter = 0;
@@ -37,7 +37,7 @@ class Encoder:
         self.pi.callback(self.pin_a, pigpio.RISING_EDGE, self.rotary_interrupt)
         self.pi.callback(self.pin_b, pigpio.RISING_EDGE, self.rotary_interrupt)
 
-    def rotary_interrupt(self, pin):
+    def rotary_interrupt(self):
         new_a_val = self.pi.read(self.pin_a)
         new_b_val = self.pi.read(self.pin_b)
 
