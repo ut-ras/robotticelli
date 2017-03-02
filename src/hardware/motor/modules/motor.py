@@ -73,6 +73,8 @@ class Motor:
         '''
         Changes speed without smoothing
         '''
+        if speed < 0 or speed > 100:
+            raise ValueError('Speed must be between 0 and 100 inclusive')
         self.pi.set_PWM_dutycucle(self.forward, i)
         self.currentSpeed = speed
 
@@ -85,20 +87,24 @@ class Motor:
         for i in range(currentSpeed, speed, -1 if currentSpeed > speed else 1):
             self.set_speed(speed)
             sleep(0.01)
-    
+
+    def increment_speed(self, inc):
+        self.set_speed(self.currentSpeed + inc)
+        return self.currentSpeed
+
+    def decrement_speed(self, inc):
+        self.set_speed(self.currentSpeed + inc)
+        return self.currentSpeed
+
     def changeSpeedAndDir(self, speed, mDir):
         '''
             Changes the speed and direction of a motor. [speed] is a
             float between 0 and 100. [pDir] is the direction of power
             flow on the motor making it go forward or backward
         '''
-        if speed < 0 or speed > 100:
-            raise ValueError('Speed must be between 0 and 100 inclusive')
-
         ## Adjusting PWM to match calculated duty cycles
         self.lock.acquire()
 
-		  ## TODO: Encoder callback to make more threadsafe
         ## Setting the direction of the motor
         if self.currentDirection != mDir:
                 self.lerp_speed(0)
