@@ -1,11 +1,13 @@
 import argparse
 import os
+import conf
 from time import sleep
 
-from modules.motor import Motor_PWM
+from modules.motor import Motor
 
-my_motor = Motor_PWM(18, 17, 4, 27, 23, 24)
-my_encoder = Encoder(7, 8)
+my_motor = Motor(*conf.MOTOR_PINS)
+my_encoder = Encoder(*conf.ENCODER_PINS)
+
 parser = argparse.ArgumentParser()
 parser.add_argument('strings', metavar='S',type=str,nargs='+')
 

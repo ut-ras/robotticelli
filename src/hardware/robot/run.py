@@ -65,10 +65,11 @@ def request_step(motor_id):
         print(current_instruction_index)
         from_x, from_y = last_instruction[1], last_instruction[2]
         goal_x, goal_y = current_instruction[1], current_instruction[2]
-        turn_steps = get_motor_spin_capped(
+        turn_steps = get_triangular_direction_vector(
             from_x,
             from_y,
-            (goal_x - from_x, goal_y - from_y)
+            goal_x, 
+				goal_y,
         )
         left_steps  = turn_steps[0]
         right_steps = turn_steps[1]

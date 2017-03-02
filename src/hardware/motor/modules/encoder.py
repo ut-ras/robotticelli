@@ -1,6 +1,7 @@
 import pigpio
 import threading
 from time import sleep
+
 class Encoder:
     '''
         Class for reading from the encoders attached
@@ -23,13 +24,13 @@ class Encoder:
 
     ## Used to lock system state changes so that add_event_detect doesn't
     ## conflicct with something like reset_steps
-    lock = threading.Lock()
-
     def __init__(self, pin1, pin2):
         self.rotary_counter = 0
         self.pin_a = pin1
 
         self.pin_b = pin2
+
+        self.lock = threading.Lock()
 
         self.pi.set_mode(self.pin_a, pigpio.INPUT)
         self.pi.set_mode(self.pin_b, pigpio.INPUT)

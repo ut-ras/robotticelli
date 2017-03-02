@@ -1,8 +1,9 @@
 import pigpio
 import threading
+import conf
 from time import sleep
 
-class Motor_PWM:
+class Motor:
     '''
         Class for controlling a DC motor with PWM,
         requires two pins per motor to function.
@@ -21,7 +22,7 @@ class Motor_PWM:
     currentSpeed = None
     currentDirection = None
 
-    lock = threading.Lock()
+    lock = None
 
     def __init__(self, fwd, pDir, res, CS, FF1, FF2, rate=20000):
         '''
@@ -44,7 +45,7 @@ class Motor_PWM:
         self.pi = pigpio.pi()
         self.currentSpeed = 0
         self.currentDirection=0
-
+        self.lock = threading.Lock()
         ## Turn fwd and direction into output pins
         self.pi.set_mode(fwd, pigpio.OUTPUT)
         self.pi.set_mode(pDir, pigpio.OUTPUT)
@@ -68,42 +69,24 @@ class Motor_PWM:
         ## Change scale of speed from 0-512 to 0-180
         self.pi.set_PWM_range(fwd, 100)
 
+    def set_speed(self, speed):
+        '''
+        Changes speed without smoothing
+        '''
+        self.pi.set_PWM_dutycucle(self.forward, i)
+        self.currentSpeed = speed
+
     def lerp_speed(self, speed):
         '''
 	     Smoothly changes speed from one to another by
 	     using linear interpolation
-	'''
+	     '''
         currentSpeed = self.currentSpeed
         for i in range(currentSpeed, speed, -1 if currentSpeed > speed else 1):
-            self.pi.set_PWM_dutycycle(self.forward, i)
+            self.set_speed(speed)
             sleep(0.01)
-        self.currentSpeed = speed
-
-    ##TODO: LOOK THROUGH DATA SHEET, ADJUST ALGORITHM 
-    def travelSpeedAndDir(self, total_needed_steps, speed, mDir):
-        '''
-		      Scales the motor speed between 15 and 40.
-		  		0 maps to zero. Uses encoder steps to ramp up and down.
-		  ''' 
-        self.changeSpeedandDir(100 * abs(speed), direction)
-        encoder_total_steps = 0
-        TIME_STEP = .1
-        while abs(encoder_total_steps) < abs(total_needed_steps):
-            sleep(TIME_STEP)
-
-            cycle_steps = encoder.readSteps()
-            encoder_total_steps += cycle_steps
-            recorded_speed = cycle_steps/TIME_STEP
-            
-				## Assuming constant ramping, the motor will stop speed^2/200
-				## encoder steps after requesting to stop.
-				##if recorded_speed^2 > 200*(total_needed_steps - encoder_total_steps):
-				##	 break
-
-        motor.changeSpeedAndDir(0)
-
-
-    def changeSpeedAndDirUnsafe(self, speed, mDir):
+    
+    def changeSpeedAndDir(self, speed, mDir):
         '''
             Changes the speed and direction of a motor. [speed] is a
             float between 0 and 100. [pDir] is the direction of power

@@ -24,6 +24,9 @@ by = H * .1
 MAX_ENCODER_STEPS = 100
 DISTANCE_PER_STEP = .01 #Travel before encoder clicks in meters
 
+MOTOR_PINS = (18, 17, 4, 27, 23, 24)
+ENCODER_PINS = (7, 8)
+
 ## DO NOT TOUCH
 IP = {
     'LMOTOR': LMOTOR_IP,
