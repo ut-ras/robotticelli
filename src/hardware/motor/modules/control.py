@@ -1,17 +1,13 @@
 from time import sleep
-from hardware.motor.modules.motor import Motor
-from hardware.motor.modules.encoder import Encoder
-
-import conf
 
 class Control:
 	time_step = None
 	motor = None
 	encoder, error = None, None
 
-	def __init__(self, time_step = .01):
-		self.motor   = Motor(*conf.MOTOR_PINS)
-		self.encoder = Encoder(*conf.ENCODER_PINS)
+	def __init__(self, Motor, Encoder, time_step = .01):
+		self.motor   = Motor
+		self.encoder = Encoder
 		self.error = 0
 		self.time_step = time_step
 
@@ -21,26 +17,29 @@ class Control:
 		0 maps to zero. Uses encoder steps to ramp up and down.
 		''' 
 		TIME_STEP = self.time_step
-		
-		self.motor.changeSpeedandDir(100 * abs(speed), direction)
 		encoder_total_steps = 0
-
-		while abs(encoder_total_steps) < abs(total_needed_steps + error):
+		self.motor.changeSpeedAndDir(0, mDir)
+		while abs(encoder_total_steps) < abs(total_needed_steps + self.error):
 			sleep(TIME_STEP)
 			
-			encoder_total_steps += self.encoder.readSteps()
+			encoder_total_steps += self.encoder.read_steps()
+			print(encoder_total_steps)
 			## Assuming uniform acceleration
-			expected_stop_distance = motor.currentSpeed^2/200.0
+			expected_stop_distance = self.motor.currentSpeed**2/1000.0
+			if mDir == 1:
+				expected_stop_distance *= 2
+
 			## Manaully ramps up, so that it can be
 			## broken out of easily
 			if self.motor.currentSpeed <= speed:
-					 self.motor.incrementSpeed(1)
+				self.motor.increment_speed(1)
 
 			if expected_stop_distance > total_needed_steps - encoder_total_steps:
-					 break
+				break
 
 		self.motor.changeSpeedAndDir(0, 0)
       ## Motor speed ramping occurs on same thread,
 		## so this is guaranteed to execute after stopping
-		encoder_total_steps += self.encoder.readSteps()
+		encoder_total_steps += self.encoder.read_steps()
+		print(encoder_total_steps)
 		self.error = total_needed_steps - encoder_total_steps

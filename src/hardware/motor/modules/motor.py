@@ -75,7 +75,7 @@ class Motor:
         '''
         if speed < 0 or speed > 100:
             raise ValueError('Speed must be between 0 and 100 inclusive')
-        self.pi.set_PWM_dutycucle(self.forward, i)
+        self.pi.set_PWM_dutycycle(self.forward, speed)
         self.currentSpeed = speed
 
     def lerp_speed(self, speed):
