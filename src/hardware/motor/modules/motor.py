@@ -1,8 +1,9 @@
 import pigpio
 import threading
+import conf
 from time import sleep
 
-class Motor_PWM:
+class Motor:
     '''
         Class for controlling a DC motor with PWM,
         requires two pins per motor to function.
@@ -21,7 +22,7 @@ class Motor_PWM:
     currentSpeed = None
     currentDirection = None
 
-    lock = threading.Lock()
+    lock = None
 
     def __init__(self, fwd, pDir, res, CS, FF1, FF2, rate=20000):
         '''
@@ -44,7 +45,7 @@ class Motor_PWM:
         self.pi = pigpio.pi()
         self.currentSpeed = 0
         self.currentDirection=0
-
+        self.lock = threading.Lock()
         ## Turn fwd and direction into output pins
         self.pi.set_mode(fwd, pigpio.OUTPUT)
         self.pi.set_mode(pDir, pigpio.OUTPUT)
@@ -68,16 +69,32 @@ class Motor_PWM:
         ## Change scale of speed from 0-512 to 0-180
         self.pi.set_PWM_range(fwd, 100)
 
+    def set_speed(self, speed):
+        '''
+        Changes speed without smoothing
+        '''
+        if speed < 0 or speed > 100:
+            raise ValueError('Speed must be between 0 and 100 inclusive')
+        self.pi.set_PWM_dutycucle(self.forward, i)
+        self.currentSpeed = speed
+
     def lerp_speed(self, speed):
         '''
 	     Smoothly changes speed from one to another by
 	     using linear interpolation
-	'''
+	     '''
         currentSpeed = self.currentSpeed
         for i in range(currentSpeed, speed, -1 if currentSpeed > speed else 1):
-            self.pi.set_PWM_dutycycle(self.forward, i)
+            self.set_speed(speed)
             sleep(0.01)
-        self.currentSpeed = speed
+
+    def increment_speed(self, inc):
+        self.set_speed(self.currentSpeed + inc)
+        return self.currentSpeed
+
+    def decrement_speed(self, inc):
+        self.set_speed(self.currentSpeed + inc)
+        return self.currentSpeed
 
     def changeSpeedAndDir(self, speed, mDir):
         '''
@@ -85,13 +102,9 @@ class Motor_PWM:
             float between 0 and 100. [pDir] is the direction of power
             flow on the motor making it go forward or backward
         '''
-        if speed < 0 or speed > 100:
-            raise ValueError('Speed must be between 0 and 100 inclusive')
-
         ## Adjusting PWM to match calculated duty cycles
         self.lock.acquire()
 
-	## TODO: Encoder callback to make more threadsafe
         ## Setting the direction of the motor
         if self.currentDirection != mDir:
                 self.lerp_speed(0)
