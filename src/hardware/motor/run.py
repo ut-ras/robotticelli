@@ -3,7 +3,7 @@ import thread
 from time import sleep
 
 from conf import MAX_ENCODER_STEPS
-from hardware.motor.modules.motor import Motor_PWM
+from hardware.motor.modules.motor import Motor
 from hardware.motor.modules.encoder import Encoder
 from hardware.motor.modules.com import send_ready
 
@@ -12,11 +12,10 @@ from hardware.motor.modules.com import send_ready
 motor = Motor_PWM(18, 17, 4, 27, 23, 24)
 encoder = Encoder(7, 8)
 
-def run(needed_encoder_steps):
+def run(needed_encoder_steps, speed):
     global motor
     global encoder
 
-    speed = needed_encoder_steps/MAX_ENCODER_STEPS
     direction = speed > 0 and 0 or 1
     motor.changeSpeedandDir(100 * abs(speed), direction)
 
