@@ -34,6 +34,10 @@ def detect_colors(image, palette_size, color_database, quick = False,
 
     # Puts the image in terms of the spray paint palette we just found
     new_image, new_image_indexes = convert_to_database_palette(image, new_palette)
+   
+    for index, pixel in enumerate(new_image):
+        if tuple(pixel) == (255, 255, 255):
+            new_image_indexes[index] = -1
 
     return (palette_indexes,
             new_image_indexes.reshape((h, w)),
