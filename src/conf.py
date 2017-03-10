@@ -6,7 +6,7 @@ ROBOT_IP = '192.168.43.225'
 PORT = 5830
 
 #String "LMOTOR", "RMOTOR", "ROBOT", or "SETUP"
-MODE = 'ROBOT'
+MODE = 'LMOTOR'
 
 # Wall parameters
 H  = 2.2   #Wall Height in m
