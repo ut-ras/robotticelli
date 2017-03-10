@@ -16,7 +16,11 @@ distance = int(args[0])
 velocity = int(args[1])
 
 speed = abs(velocity)
-mdir = (0 if velocity >= 0 else 1)
+mdir = velocity < 0
 
-my_controls.travelSpeedAndDir(int(distance), speed, mdir)
 
+while 1:
+	my_controls.travelSpeedAndDir(int(distance), speed, mdir)
+	sleep(2)
+	my_controls.travelSpeedAndDir(int(distance), speed, not mdir)
+        sleep(2)
