@@ -25,11 +25,11 @@ def run_step():
     ## message the robot RPi that this motor is ready for instructions
     form = dict(request.form)
     if 'encoder_steps' in form: 
-        encoder_steps = round(float(form['encoder_steps'][0]))
-        spin_speed    = round(float(form['speed'][0]))
+        encoder_steps = float(form['encoder_steps'][0])
+        spin_speed    = float(form['speed'][0])
         ## Debugging purposes
         print("ENCODER STEPS: " + str(encoder_steps))
-        async_run_step.delay(encoder_steps, spin_speed)
+       	pwm.run(encoder_steps, spin_speed)
     else:
         print("Faulty request, encoder steps not found")
 

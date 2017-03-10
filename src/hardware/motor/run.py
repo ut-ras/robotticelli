@@ -22,6 +22,5 @@ def run(needed_encoder_steps, speed):
     direction = speed > 0 and 0 or 1   
     controller.travelSpeedAndDir(needed_encoder_steps, (speed * .2 + .15), direction)
     #Reset for next run
-    encoder.resetSteps()
     send_ready() # for robot
 
