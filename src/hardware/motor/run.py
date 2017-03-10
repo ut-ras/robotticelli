@@ -2,36 +2,26 @@ import pigpio
 import thread
 from time import sleep
 
+import conf
 from conf import MAX_ENCODER_STEPS
-from hardware.motor.modules.motor import Motor_PWM
+from hardware.motor.modules.control import Control
+from hardware.motor.modules.motor import Motor
 from hardware.motor.modules.encoder import Encoder
 from hardware.motor.modules.com import send_ready
 
 ## create a DC motor PWM output on pins 0, 1
 ## 0 controls forwards, 1 controls backwards
-motor = Motor_PWM(18, 17, 4, 27, 23, 24)
-encoder = Encoder(13, 14)
 
-def run(needed_encoder_steps):
-    global motor
-    global encoder
+controller = Control(Motor(*conf.MOTOR_PINS), Encoder(*conf.ENCODER_PINS));
 
-    speed = needed_encoder_steps/MAX_ENCODER_STEPS
-    direction = speed > 0 and 0 or 1
-    motor.changeSpeedandDir(100 * abs(speed), direction)
-    
+def run(needed_encoder_steps, speed):
+    global controller
 
-    ## Execute until encoder has stepped enough
-    needed_encoder_steps = 0
-    #while encoder_total_steps < abs(needed_encoder_steps):
-    #   print(encoder)
-    #   encoder_total_steps = encoder.readSteps()
-
-    sleep(1)
-    #TODO: change this algorithm to work with kalman filter and PID
-    #Motionless
-    motor.changeSpeedAndDir(90)
+    if needed_encoder_steps > 5:
+        needed_encoder_steps = 5
+    direction = speed > 0 and 0 or 1   
+    controller.travelSpeedAndDir(needed_encoder_steps, (speed * .2 + .15), direction)
     #Reset for next run
     encoder.resetSteps()
-    send_ready()
+    send_ready() # for robot
 

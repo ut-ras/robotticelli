@@ -1,45 +1,40 @@
-import RPIO as GPIO
+import pigpio
+from time import sleep
 
-class Servo_PWM:
-    '''
-        Class for controlling a servo with PWM,
-        requires two pins per motor to function.
-        Meant to be interfaced with a motor controller
-    '''
+class Servo:
+    servo_min = 900 # minimum pulsewidth, uS
+    servo_max = 2100 # maximum pulsewidth, uS
+    spray_angle = 90 #servo angle when can begins spraying
+    stop_angle = 150 # servo angle when can stops spraying
 
-    forward = None
+    servo_pin = None
 
-    def __init__(self, fwd, rate=500):
-        '''
-            Starts PWM on the fwd pin and
-            back pin, with a rate of [rate]
-            hertz. Initializes to 0 duty cycle
-        '''
+    pi = None
+    def __init__(servo_pin = 17):
+        self.pi = pigpio.pi()
 
-        ## Initializing fwd and back pins
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(fwd, GPIO.OUT)
+    #map desired servo angle to pulsewidth
+    def map(self, value, from_low, from_high, to_low, to_high):
+        from_range   = from_high - from_low
+        to_range     = to_high - to_low
+        scale_factor = float(from_range)/to_range
+        return to_low + (value/scale_factor)
 
-        ## Exporting them to class variables so that
-        ## they can be used by other functions
-        self.forward = GPIO.PWM(fwd, rate)
-        self.forward.begin(0)
+    #command servo angle
+    def set_angle(self, angle):
+        pulse = map(angle, 0, 180, self.servo_min, self.servo_max)
+        self.pi.set_servo_pulsewidth(self.servo_pin, pulse)
 
-    def changeDutyCycle(duty_cycle):
-        '''
-            Changes the duty cycle of a servo. [duty_cycle] is a
-            float between 0 and 180, with 0 representing
-            fully backwards, and 180 representing fully
-            forwards
-        '''
-        if duty_cycle < 0 or duty_cycle > 100:
-            raise ValueError('Speed must be between 0 and 100 inclusive')
+    #command servo to spray
+    def press(self):
+        self.set_angle(self.servo_pin, self.spray_angle)
 
-        ## There is some overlap between the two PWM channels
-        self.forward.ChangeDutyCycle(duty_cycle)
+    #command servo to stop spraying
+    def release(self):
+        self.set_angle(self.servo_pin, self.stop_angle)
 
-    def stop():
-        self.forward.stop()
-
-    def start():
-        self.forward.start(0)
+    #spray for a set time limit
+    def spray(self, time_spray = 3):
+        self.press()
+        sleep(time_spray)
+        self.stop()

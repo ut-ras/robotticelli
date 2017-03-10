@@ -3,8 +3,8 @@ import numpy as np
 import conf
 from time import sleep
 
-from hardware.robot.modules.motor_math import get_motor_spin_capped
-from hardware.robot.modules.com import send_encoder_steps
+from hardware.robot.modules.motor_math import get_triangular_direction_vector
+from hardware.robot.modules.com import send_encoder_steps_and_speed
 
 ##
 ## This is the code that instructs how to get from A to B
@@ -65,15 +65,18 @@ def request_step(motor_id):
         print(current_instruction_index)
         from_x, from_y = last_instruction[1], last_instruction[2]
         goal_x, goal_y = current_instruction[1], current_instruction[2]
-        turn_steps = get_motor_spin_capped(
+        turn_steps = get_triangular_direction_vector(
             from_x,
             from_y,
-            (goal_x - from_x, goal_y - from_y)
+            goal_x, 
+				goal_y,
         )
         left_steps  = turn_steps[0]
         right_steps = turn_steps[1]
+        max_steps = max(abs(left_steps), abs(right_steps))
+
         ##TODO: Turn into an async send_turn_ratio if problems arise
         if conf.LMOTOR_IP != '0.0.0.0':
-            send_encoder_steps(conf.LMOTOR_IP, left_steps)
+            send_encoder_steps_and_speed(conf.LMOTOR_IP, left_steps, left_steps/max_steps)
         if conf.RMOTOR_IP != '0.0.0.0':
-            send_encoder_steps(conf.RMOTOR_IP, right_steps)
+            send_encoder_steps_and_speed(conf.RMOTOR_IP, right_steps, right_steps/max_steps)

@@ -2,13 +2,8 @@ import conf
 import os
 
 from hardware.motor.server import *
-
 from hardware.motor.modules.com import test_connection
-from hardware.motor.modules.motor import Motor_PWM
 ## Initialize motors, testing
-motor = Motor_PWM(12, 13)
-encoder = Encoder(13, 14)
-motor.changeSpeed(00)
 
 def main():
 	pid = os.fork()

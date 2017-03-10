@@ -1,4 +1,3 @@
-import thread
 from flask import Flask, request, jsonify
 from celery import Celery
 
