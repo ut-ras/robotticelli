@@ -19,7 +19,7 @@ class Control:
 		TIME_STEP = self.time_step
 		encoder_total_steps = 0
 		self.motor.changeSpeedAndDir(0, mDir)
-		print(speed, mDir)
+		print(speed, mDir, self.error)
 		while abs(encoder_total_steps) < abs(total_needed_steps + self.error):
 			sleep(TIME_STEP)
 			
@@ -28,12 +28,14 @@ class Control:
 			expected_stop_distance = self.motor.currentSpeed**2/1000.0
 			if expected_stop_distance > total_needed_steps - encoder_total_steps:
 				break
+			if int(total_needed_steps) == 0:
+				break
 			if mDir == 1:
 				expected_stop_distance *= 2
 
 			## Manaully ramps up, so that it can be
 			## broken out of easily
-			print(self.motor.currentSpeed)
+			print(encoder_total_steps)
 			if self.motor.currentSpeed <= round(speed):
 				self.motor.increment_speed(1)
 		

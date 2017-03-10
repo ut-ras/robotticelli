@@ -8,7 +8,8 @@ from hardware.motor.modules.com import test_connection
 def main():
 	pid = os.fork()
 	if pid == 0:
-		    os.system("celery -A hardware.motor.server.celery worker --concurrency=1")
+		   # os.system("celery -A hardware.motor.server.celery worker --concurrency=1")
+		pass
 	else:
 		if conf.ROBOT_IP != '0.0.0.0':
 			test_connection(conf.ROBOT_IP)

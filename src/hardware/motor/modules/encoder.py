@@ -39,7 +39,8 @@ class Encoder:
         self.pi.callback(self.pin_b, pigpio.RISING_EDGE, self.rotary_interrupt)
 
     def rotary_interrupt(self, pin, level, tick):
-        new_a_val = self.pi.read(self.pin_a)
+        print("interupt")
+	new_a_val = self.pi.read(self.pin_a)
         new_b_val = self.pi.read(self.pin_b)
 
         ## If this function was fired and there is really no change
