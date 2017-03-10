@@ -1,4 +1,3 @@
-import argparse
 import os
 import conf
 from time import sleep
@@ -11,9 +10,6 @@ from modules.control import Control
 my_motor = Motor(*conf.MOTOR_PINS)
 my_controls = Control(my_motor, Encoder(*conf.ENCODER_PINS));
 
-parser = argparse.ArgumentParser()
-parser.add_argument('strings', metavar='S',type=str,nargs='+')
-args = parser.parse_args().strings[0].split()
 distance = random.randint(15, 45)
 velocity = 20
 
