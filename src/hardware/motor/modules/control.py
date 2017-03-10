@@ -35,7 +35,7 @@ class Control:
 
 			## Manaully ramps up, so that it can be
 			## broken out of easily
-			print(encoder_total_steps)
+			print(self.motor.currentDirection, encoder_total_steps)
 			if self.motor.currentSpeed <= round(speed):
 				self.motor.increment_speed(1)
 		
