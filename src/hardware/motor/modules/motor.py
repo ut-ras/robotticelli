@@ -73,8 +73,8 @@ class Motor:
         '''
         Changes speed without smoothing
         '''
-        if speed < 0 or speed > 100:
-            raise ValueError('Speed must be between 0 and 100 inclusive')
+        if speed < 0 or speed > 40:
+            raise ValueError('Speed must be between 0 and 40 for safety purposes')
         self.pi.set_PWM_dutycycle(self.forward, speed)
         self.currentSpeed = speed
 

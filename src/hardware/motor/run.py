@@ -20,7 +20,7 @@ def run(needed_encoder_steps, speed):
     if needed_encoder_steps > 5:
         needed_encoder_steps = 5
     direction = speed > 0 and 0 or 1   
-    controller.travelSpeedAndDir(needed_encoder_steps, (speed * .2 + .15), direction)
+    controller.travelSpeedAndDir(needed_encoder_steps, (speed * 20 + 15), direction)
     #Reset for next run
     send_ready() # for robot
 
