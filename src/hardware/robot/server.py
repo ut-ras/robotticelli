@@ -12,7 +12,7 @@ celery.conf.update(app.config)
 
 @celery.task
 def async_request_step(motor_id):
-    request_step(motor_id)
+    request_step(int(motor_id))
 
 @app.route("/status", methods=['POST'])
 def run_step_when_ready():

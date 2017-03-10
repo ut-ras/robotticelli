@@ -61,8 +61,8 @@ def get_triangular_direction_vector(x, y, goal_x, goal_y):
    r_x, r_y = triangulate(x, y)
    r_goal_x, r_goal_y = triangulate(goal_x, goal_y)
 
-   r_dx = r_goal_x - r_x
-   r_dy = r_goal_y - r_y
+   r_dx = (r_goal_x - r_x)/DISTANCE_PER_STEP
+   r_dy = (r_goal_y - r_y)/DISTANCE_PER_STEP
 
    return (r_dx, r_dy)
 	

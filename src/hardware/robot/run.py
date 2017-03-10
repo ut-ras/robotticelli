@@ -2,7 +2,7 @@ from __future__ import absolute_import
 import numpy as np
 import conf
 from time import sleep
-
+from functools import reduce
 from hardware.robot.modules.motor_math import get_triangular_direction_vector
 from hardware.robot.modules.com import send_encoder_steps_and_speed
 
@@ -19,7 +19,7 @@ from hardware.robot.modules.com import send_encoder_steps_and_speed
 ## instructions has the following format per line:
 ## [CAN_NUMBER, X, Y]
 instructions = np.genfromtxt('hardware/robot/image.tsv', delimiter='\t')
-motors_requested = [True]
+motors_requested = [True, True]
 
 last_instruction_index = -1
 current_instruction_index = 1
@@ -71,6 +71,7 @@ def request_step(motor_id):
             goal_x, 
 				goal_y,
         )
+        print(turn_steps)
         left_steps  = turn_steps[0]
         right_steps = turn_steps[1]
         max_steps = max(abs(left_steps), abs(right_steps))
