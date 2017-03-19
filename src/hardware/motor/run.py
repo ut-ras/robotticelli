@@ -1,4 +1,3 @@
-import pigpio
 import thread
 from time import sleep
 
