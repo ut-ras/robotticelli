@@ -1,9 +1,9 @@
 import os
-import conf
+# import conf
 from time import sleep
 import random
 
-from modules.motor import Motor
+from hardware.motor.modules.motor import Motor
 from modules.encoder import Encoder
 from modules.control import Control
 
