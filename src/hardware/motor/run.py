@@ -25,6 +25,6 @@ if __name__ == '__main__':
     PARSER.add_argument("encoder_steps")
     PARSER.add_argument("spin_speed")
     ARGS = PARSER.parse_args()
-    run(*ARGS)
+    run(ARGS.encoder_steps, ARGS.spin_speed)
 
     
