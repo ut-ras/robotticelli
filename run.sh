@@ -1,5 +1,7 @@
 cd src
 
+cp conf.py ./hardware/motor/
+
 if pgrep -x "python2" > /dev/null; then
   killall python2
 fi
