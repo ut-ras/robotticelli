@@ -86,12 +86,12 @@ class Motor(object):
         for i in range(current_speed, speed, -1 if current_speed > speed else 1):
             self.set_speed(speed)
             sleep(0.01)
-’
+
     def increment_speed(self, inc):
         '''
             Increments speed by inc
         '''
-        self.set_speed(self.current_speed + inc)’
+        self.set_speed(self.current_speed + inc)
         return self.current_speed
 
     def decrement_speed(self, inc):
@@ -112,9 +112,9 @@ class Motor(object):
 
         ## Setting the direction of the motor
         if self.currentDirection != mDir:
-                self.lerp_speed(0)
-                self.pi.write(self.direction, mDir)
-                self.currentDirection = mDir
+            self.lerp_speed(0)
+            self.pi.write(self.direction, mDir)
+            self.currentDirection = mDir
         self.lerp_speed(speed)
 
         self.lock.release()
@@ -129,14 +129,14 @@ class Motor(object):
 
     def fault(self):
         ## detects fault, stops motor, and notes which fault occurred
-        fault1 = self.pi.read(fault1)
-        fault2 = self.pi.read(fault2)
+        fault1 = self.pi.read(self.fault1)
+        fault2 = self.pi.read(self.fault2)
         '''Detected fault '''
         if fault1 and fault2:
-                print("Detected fault under voltage")
+            print "Detected fault under voltage"
         elif fault1:
-                print("Detected fault overtemp")
+            print("Detected fault overtemp")
         elif fault2:
-                print("Detected fault short circuit")
-        stop(self)
+            print("Detected fault short circuit")
+        self.stop()
 
