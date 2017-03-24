@@ -1,7 +1,7 @@
 #IP Destinations for robot components
 LMOTOR_IP = '192.168.43.6'
 RMOTOR_IP  = '0.0.0.0'
-ROBOT_IP = '192.168.43.225'
+ROBOT_IP = '192.168.43.135'
 
 PORT = 5830
 

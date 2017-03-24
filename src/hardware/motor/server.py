@@ -1,10 +1,10 @@
 import subprocess
+import os
 
 from flask import Flask, request, jsonify
 from conf import MAX_ENCODER_STEPS, PORT
 
 app = Flask(__name__)
-
 
 @app.route("/", methods=['POST'])
 def run_step():
@@ -18,7 +18,9 @@ def run_step():
     if 'encoder_steps' in form:
         encoder_steps = form['encoder_steps'][0]
         spin_speed = form['speed'][0]
-        subprocess.call("python hardware/motor/run.py {} {}".format(encoder_steps, spin_speed))
+	print "halo!"
+	os.system('python ./hardware/motor/run.py {} {}'.format(encoder_steps, spin_speed))
+	print "goootby"
     else:
         print "Faulty request, encoder steps not found"
 

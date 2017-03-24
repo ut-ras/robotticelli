@@ -1,4 +1,4 @@
-cd src
+cd ./src
 
 cp conf.py ./hardware/motor/
 

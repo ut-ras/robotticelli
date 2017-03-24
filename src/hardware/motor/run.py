@@ -11,9 +11,8 @@ from modules.encoder import Encoder
 CONTROLLER = Control(Motor(*conf.MOTOR_PINS), Encoder(*conf.ENCODER_PINS))
 
 def run(needed_encoder_steps, speed):
-    direction = speed > 0 and 0 or 1
+    direction = 0 if speed > 0 else 1
     speed = abs(speed)
-    print(speed) 
     CONTROLLER.travelSpeedAndDir(needed_encoder_steps, (speed * 15 + 15), direction)
     print('completed task')
     #Reset for next run
@@ -25,6 +24,6 @@ if __name__ == '__main__':
     PARSER.add_argument("encoder_steps")
     PARSER.add_argument("spin_speed")
     ARGS = PARSER.parse_args()
-    run(ARGS.encoder_steps, ARGS.spin_speed)
+    run(float(ARGS.encoder_steps), float(ARGS.spin_speed))
 
     
