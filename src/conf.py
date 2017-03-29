@@ -1,16 +1,16 @@
 #IP Destinations for robot components
 LMOTOR_IP = '192.168.43.6'
-RMOTOR_IP  = '0.0.0.0'
-ROBOT_IP = '192.168.43.135'
+RMOTOR_IP = '0.0.0.0'
+ROBOT_IP = '192.168.43.230'
 
 PORT = 5830
 
 #String "LMOTOR", "RMOTOR", "ROBOT", or "SETUP"
-MODE = 'LMOTOR'
+MODE = 'ROBOT'
 
 # Wall parameters
-H  = 2.2   #Wall Height in m
-W  = 1.6   #Wall Width in m
+H  = 1.4   #Wall Height in m
+W  = 2.0   #Wall Width in m
 g  = 9.81 #Acceleration of gravity in m/s^2
 m  = 10   #The robot mass in kg
 

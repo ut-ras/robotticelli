@@ -3,7 +3,7 @@ layout: post
 title: Robotticelli
 ---
 
-We've just completed or demoing at this year's South by Southwest Create (SXSW Create). So, let's talk about Robotticelli -- what we've done and where we're headed. This is a follow-up to a [<span class="bodyLink">previous post</span>][primavera_blogpost] made a year and a half ago about roboticelli.
+We've just completed demoing at this year's South by Southwest Create (SXSW Create). So, let's talk about Robotticelli -- what we've done and where we're headed. This is a follow-up to a [<span class="bodyLink">previous post</span>][primavera_blogpost] made a year and a half ago about roboticelli.
 
 [primavera_blogpost]: http://ras.ece.utexas.edu/2015/11/06/primavera.html
 
@@ -15,11 +15,11 @@ In essense, Robotticelli is a robot designed to paint murals on walls. In order 
 
 ![robotticelli at SXSW, with only two motors attached](http://i.imgur.com/dwBVJba.jpg)
 
-Because the robot's system has a lot of moving parts (figuratively and literally), in any discussion of it's individual systems, it's important understand how these systems works in relation to everything else.
+Because the robot's system has a lot of moving parts (figuratively and literally), in any discussion of it's individual systems, it's important understand how each of these systems works in relation to everything else.
 
 The project is split into three parts: Magi, Venus, and Primavera. **Primavera** is responsible for image processing and palette reduction to a set of spraypaint colors that we can order. **Venus** takes the reduced color image outputted by primavera, transforms it to a list of coordinates along the wall, and finds an efficient path to visit all these coordinates. It then generates a simple instruction set for the last system, Magi to follow. **Magi** is responsible for all of the robotic movement; this include everything from the servo drivers and communication modules to the non-linear control system.
 
-Although we will talk about all of the systems, Magi is the beef of Robotticelli, so we will spend most of our time talking about that.
+Although we will talk about all of the systems, Magi is the beef of Robotticelli, so we will spend most of our time discussing that.
 
 ### Primavera
 
@@ -67,7 +67,7 @@ With the image looking much better, we are now ready to pass this on to our next
 ------------
 ### Venus
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Venus is by far the simplest part of robotticelli, as it essentially acts as the 'glue' between Primavera and Magi. Because our images have been reduced in color, each pixel in the image can be represented by 1 of *n* colors. In our image shown above, we are using *five* (white, black, red, green, blue). 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Venus is by far the simplest part of Robotticelli, as it essentially acts as the 'glue' between Primavera and Magi. Because our images have been reduced in color, each pixel in the image can be represented by 1 of *n* colors. In our image shown above, we are using *five* (white, black, red, green, blue). 
 
 To start, we assign each pixel in the image to a coordinate on the wall by linearly scaling. Then, we split the image up into clouds of each color (shown below) and apply a greedy approximation to the [<span class="bodyLink">travelling sales man problem</span>][tsp]. This will generate a path that is about 30% longer than the optimal path.
 
@@ -101,11 +101,11 @@ SERVO   X               Y
 
 ### Magi (and Electronics)
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Magi is the most complicated piece of code in the robot, as it dictates everything about how the robot gets from point A to point B. Magi is split up into two interworking parts: **motor** and **robot**. Since the robot has to communicate with different parts of itself wirelessly, we found it sensible to assign the **robot** as the master communication device and the **motors** as slave communication devices. *There can only be one robot, but up to four motors.*
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Magi is the most complicated piece of code in the robot, as it dictates everything about how the robot gets from point A to point B. Magi is split up into two interworking parts: **motor** and **robot**. Since the robot has to communicate with different parts of itself wirelessly, we found it sensible to assign the **robot** as the master communication device and the **motors** as slave communication devices. 
 
-Thinking about it in this way simplifies the problem dramatically, because now we no longer have to worry about having motors communicate to other motors. All flow of information will be of the form **robot → motor** or **motor → robot**.
+*There can only be one robot, but up to four motors.* Thinking about it in this way simplifies the problem dramatically, because now we no longer have to worry about having motors communicate to other motors. All flow of information will be of the form **robot → motor** or **motor → robot**.
 
-For means of wirelessly communicating, we chose the fairly-often used choice of HTTP over a WIFI connection, as there are a lot of libraries  and other resources available to quickly build solutions. We then set up a private wifi-network and configured static IPs for all devices so that messages are consistently sent to the same devices, with each node having it's own Flask server. Flask is a microframework for web-driven programming, so it has proven useful for prototyping our robot's wireless communication systems. Using this, we can listen for requests of specific endpoints and execute code from other modules like so:
+For means of wirelessly communicating, we chose the fairly-often used choice of HTTP over a WIFI connection, as there are a lot of libraries  and other resources available to quickly build solutions. We then set up a private wifi-network and configured static IPs for all devices so that messages are consistently sent to the same devices, with each node having it's own Flask server. Flask is a microframework for web-driven programming, and it has proven useful for prototyping our robot's wireless communication systems before we move on to a more robust system. Using this, we can listen for requests of specific endpoints and execute code from other modules like so:
 
 ###### ROBOT:
 ```python
@@ -178,6 +178,8 @@ def get_rope_lengths(x, y):
 So, how do we use this coordinate change to calculate how we need to pull the motors? Run get_rope_lengths(x,y)
   on both the current position and the target. Or, if we store our current rope lengths as a state, just on the target. Regardless, if we know how much rope we <i>currently</i> have out and how much rope we <i>will</i> have out when we are at our final position, we can just let in or out  rope accordingly to meet these goals.
 
+Here is some code utilizing our past two functions to do just that.
+
 ```python
 def get_rope_length_change(x, y, goal_x, goal_y):
    '''
@@ -193,5 +195,9 @@ def get_rope_length_change(x, y, goal_x, goal_y):
 
    return r_dx, r_dy
 ```
+
+Sparing the technical details of our implementation, this brings us to the current state of Robotticelli. Two of our committee members, Sid Desai and John Duncan, have began working on developing a much-improved non-linear control system for our robot that will be used to more effectively guide and locate our robot along the wall. Meanwhile, Sarah Muschinske and I have opened the table to improvements in our communication mechanism, looking for technologies that will allow us to scale our robot to larger walls. We are also beginning to revisit our robot's sprayer carriage. Mark Jennings is updating its design and gearing down motors, while the electrical team furiously writes code to integrate wheel encoder and IMU data into our algorithms for more precise robot localization.
+
+Although we have a long way to go, we are covering ground more quickly than we ever have before. Surely, it won't be much longer before Robotticelli is the next hot artist in austin.
 
 ###### Author: Aaron Evans
