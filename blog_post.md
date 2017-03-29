@@ -198,6 +198,6 @@ def get_rope_length_change(x, y, goal_x, goal_y):
 
 Sparing the technical details of our implementation, this brings us to the current state of Robotticelli. Two of our committee members, Sid Desai and John Duncan, have began working on developing a much-improved non-linear control system for our robot that will be used to more effectively guide and locate our robot along the wall. Meanwhile, Sarah Muschinske and I have opened the table to improvements in our communication mechanism, looking for technologies that will allow us to scale our robot to larger walls. We are also beginning to revisit our robot's sprayer carriage. Mark Jennings is updating its design and gearing down motors, while the electrical team furiously writes code to integrate wheel encoder and IMU data into our algorithms for more precise robot localization.
 
-Although we have a long way to go, we are covering ground more quickly than we ever have before. Surely, it won't be much longer before Robotticelli is the next hot artist in austin.
+Although we have a long way to go, we are covering ground more quickly than we ever have before. Surely, it won't be much longer before Robotticelli is the next hotest artist in Austin.
 
 ###### Author: Aaron Evans
