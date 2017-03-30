@@ -58,27 +58,26 @@ def solve_rounds(pixels, max_pixels_per_can=100):
 	unique = np.unique(pixels)
 
 	for unique_value in unique:
-
-		print("finding short path for label " + str(unique_value))
-
-		filtered_idx = np.where(pixels == unique_value)
-
-		x_coords = np.remainder(filtered_idx[0], picture_mod)
-		y_coords = np.floor_divide(filtered_idx[0], picture_mod)
-		coords   = np.transpose([x_coords, y_coords])
+            print(unique_value)
+            if unique_value != -1:
+                print("finding short path for label " + str(unique_value))
+                filtered_idx = np.where(pixels == unique_value)
+                x_coords = np.remainder(filtered_idx[0], picture_mod)
+                y_coords = np.floor_divide(filtered_idx[0], picture_mod)
+                coords   = np.transpose([x_coords, y_coords])
 
 		## Ordering pixels
 
-		ordered = np.array(find_short_path(coords))
-		order_s = ordered.shape[0]
+                ordered = np.array(find_short_path(coords))
+                order_s = ordered.shape[0]
 
-		num_divisions = int(order_s/max_pixels_per_can) + 1
+                num_divisions = int(order_s/max_pixels_per_can) + 1
 
-		if num_divisions > 0:
-			split_points  = [i*max_pixels_per_can for i in range(num_divisions)]
-			output.append([unique_value] + np.array_split(ordered, split_points)[1:])
-		else:
-			output.append([unique_value] + ordered)
+                if num_divisions > 0:
+                    split_points  = [i*max_pixels_per_can for i in range(num_divisions)]
+                    output.append([unique_value] + np.array_split(ordered, split_points)[1:])
+                else:
+                    output.append([unique_value] + ordered)
 
 	return output
 

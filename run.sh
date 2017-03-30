@@ -1,7 +1,9 @@
-cd src
+cd ./src
 
-if pgrep -x "python2" > /dev/null; then
-  killall python2
+cp conf.py ./hardware/motor/
+
+if pgrep -x "python" > /dev/null; then
+  killall python
 fi
 if pgrep -x "pigpiod" > /dev/null; then
   killall pigpiod
@@ -13,4 +15,4 @@ if pgrep -x "redis" > /dev/null; then
   exec redis-server
 fi
 
-python2 main.py
+python main.py

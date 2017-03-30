@@ -11,10 +11,11 @@ if conf.MODE == "LMOTOR":
 elif conf.MODE == "RMOTOR":
     motor_id = 1
 
-## TODO: [low importance] MOVE ALL FUNCTIONS TO requests
+# TODO: [low importance] MOVE ALL FUNCTIONS TO requests
 
-## Motor functions for communicating with the master RPi.
-## Filled with functions to wrap HTTP request code.
+# Motor functions for communicating with the master RPi.
+# Filled with functions to wrap HTTP request code.
+
 
 def send_ready():
     '''
@@ -29,8 +30,10 @@ def send_ready():
         'motor_id': motor_id
     }
     print(status)
-    response = requests.post("http://{0}:{1}/status".format(conf.IP['ROBOT'], conf.PORT), data=status)
+    response = requests.post(
+        "http://{0}:{1}/status".format(conf.IP['ROBOT'], conf.PORT), data=status)
     print(response, response.text)
+
 
 def test_connection(to_ip):
     try:
@@ -38,8 +41,8 @@ def test_connection(to_ip):
             This is to test the connection with the RPI center
             module
         '''
-        status  = urllib.urlencode({'from': conf.IP[conf.MODE]})
-        conn = httplib.HTTPConnection(to_ip, port=conf.PORT);
+        status = urllib.urlencode({'from': conf.IP[conf.MODE]})
+        conn = httplib.HTTPConnection(to_ip, port=conf.PORT)
         conn.request("POST", "/test", status)
         content = conn.getresponse()
         print(content.reason, content.status)

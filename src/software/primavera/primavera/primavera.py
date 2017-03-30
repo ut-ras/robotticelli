@@ -32,6 +32,9 @@ def primavera(image, colors, dither, palette_size=5, save_image='out.png', save_
 
         image  = dither(img, colors[palette])
 
+    #TODO: FIX THIS AWFUL HACK
+    palette, labels, image = detect_colors(image, palette_size, colors, quick, entire, overshoot, merge)
+
     #checkInconsistent(image)
 
     if save_labels:

@@ -1,9 +1,8 @@
-import pigpio
 import threading
-import conf
 from time import sleep
+import pigpio
 
-class Motor:
+class Motor(object):
     '''
         Class for controlling a DC motor with PWM,
         requires two pins per motor to function.
@@ -14,12 +13,12 @@ class Motor:
     forward = None
     direction = None
     reset = None
-    currentSense = None
+    current_sense = None
     fault1 = None
     fault2 = None
     pi = None
 
-    currentSpeed = None
+    current_speed = None
     currentDirection = None
 
     lock = None
@@ -36,15 +35,15 @@ class Motor:
 
         ## Exporting them to class variables so that
         ## they can be used by other functions
-        self.forward  = fwd
+        self.forward = fwd
         self.direction = pDir
         self.reset = res
-        self.currentSense = CS
+        self.current_sense = CS
         self.fault1 = FF1
         self.fault2 = FF2
         self.pi = pigpio.pi()
-        self.currentSpeed = 0
-        self.currentDirection=0
+        self.current_speed = 0
+        self.currentDirection = 0
         self.lock = threading.Lock()
         ## Turn fwd and direction into output pins
         self.pi.set_mode(fwd, pigpio.OUTPUT)
@@ -73,28 +72,34 @@ class Motor:
         '''
         Changes speed without smoothing
         '''
-        if speed < 0 or speed > 100:
-            raise ValueError('Speed must be between 0 and 100 inclusive')
+        if speed < 0 or speed > 40:
+            raise ValueError('Speed must be between 0 and 40 for safety purposes')
         self.pi.set_PWM_dutycycle(self.forward, speed)
-        self.currentSpeed = speed
+        self.current_speed = speed
 
     def lerp_speed(self, speed):
         '''
 	     Smoothly changes speed from one to another by
 	     using linear interpolation
 	     '''
-        currentSpeed = self.currentSpeed
-        for i in range(currentSpeed, speed, -1 if currentSpeed > speed else 1):
+        current_speed = self.current_speed
+        for i in range(current_speed, speed, -1 if current_speed > speed else 1):
             self.set_speed(speed)
             sleep(0.01)
 
     def increment_speed(self, inc):
-        self.set_speed(self.currentSpeed + inc)
-        return self.currentSpeed
+        '''
+            Increments speed by inc
+        '''
+        self.set_speed(self.current_speed + inc)
+        return self.current_speed
 
     def decrement_speed(self, inc):
-        self.set_speed(self.currentSpeed + inc)
-        return self.currentSpeed
+        '''
+            Decrements speed by inc
+        '''
+        self.set_speed(self.current_speed + inc)
+        return self.current_speed
 
     def changeSpeedAndDir(self, speed, mDir):
         '''
@@ -107,16 +112,16 @@ class Motor:
 
         ## Setting the direction of the motor
         if self.currentDirection != mDir:
-                self.lerp_speed(0)
-                self.pi.write(self.direction, mDir)
-                self.currentDirection = mDir
+            self.lerp_speed(0)
+            self.pi.write(self.direction, mDir)
+            self.currentDirection = mDir
         self.lerp_speed(speed)
 
         self.lock.release()
 
     def stop(self):
         '''Stops PWM at the pins but leaves the daemon running'''
-        self.pi.changeSpeed(0);
+        self.pi.changeSpeed(0)
 
         ## Changes motor driver to low energy mode
         ## TODO: INSPECT THIS
@@ -124,14 +129,14 @@ class Motor:
 
     def fault(self):
         ## detects fault, stops motor, and notes which fault occurred
-        fault1 = self.pi.read(fault1)
-        fault2 = self.pi.read(fault2)
+        fault1 = self.pi.read(self.fault1)
+        fault2 = self.pi.read(self.fault2)
         '''Detected fault '''
         if fault1 and fault2:
-                print("Detected fault under voltage")
+            print "Detected fault under voltage"
         elif fault1:
-                print("Detected fault overtemp")
+            print("Detected fault overtemp")
         elif fault2:
-                print("Detected fault short circuit")
-        stop(self)
+            print("Detected fault short circuit")
+        self.stop()
 

@@ -1,27 +1,29 @@
-import pigpio
-import thread
-from time import sleep
-
 import conf
-from conf import MAX_ENCODER_STEPS
-from hardware.motor.modules.control import Control
-from hardware.motor.modules.motor import Motor
-from hardware.motor.modules.encoder import Encoder
-from hardware.motor.modules.com import send_ready
+
+from modules.com import send_ready
+from modules.control import Control
+from modules.motor import Motor
+from modules.encoder import Encoder
+
 
 ## create a DC motor PWM output on pins 0, 1
 ## 0 controls forwards, 1 controls backwards
-
-controller = Control(Motor(*conf.MOTOR_PINS), Encoder(*conf.ENCODER_PINS));
+CONTROLLER = Control(Motor(*conf.MOTOR_PINS), Encoder(*conf.ENCODER_PINS))
 
 def run(needed_encoder_steps, speed):
-    global controller
-
-    if needed_encoder_steps > 5:
-        needed_encoder_steps = 5
-    direction = speed > 0 and 0 or 1   
-    controller.travelSpeedAndDir(needed_encoder_steps, (speed * .2 + .15), direction)
+    direction = 0 if speed > 0 else 1
+    speed = abs(speed)
+    CONTROLLER.travelSpeedAndDir(needed_encoder_steps, (speed * 15 + 15), direction)
+    print('completed task')
     #Reset for next run
-    encoder.resetSteps()
     send_ready() # for robot
 
+if __name__ == '__main__':
+    import argparse
+    PARSER = argparse.ArgumentParser()
+    PARSER.add_argument("encoder_steps")
+    PARSER.add_argument("spin_speed")
+    ARGS = PARSER.parse_args()
+    run(float(ARGS.encoder_steps), float(ARGS.spin_speed))
+
+    
