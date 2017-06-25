@@ -144,7 +144,6 @@ We then create a separate module that defines a number of requests each node can
 With four motors attached, it remains mostly the same.
 
 <img src="http://i.imgur.com/2qOdBZJ.png" height='400'/>
-FIX THIS BEFORE SENDING IT OUT
 
 Great! We can work off of this. Next we need to look at how exactly the robot moves through our space -- and how we can pull the ropes to get to a specific point. Using some simple rules of triangles, we can rewrite our XY coordinates as pair of distances -- one from the upper left motor, and one from the upper right motor. 
 
